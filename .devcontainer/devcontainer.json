@@ -6,8 +6,8 @@
 	},
 	"containerEnv": {
 		"LIBGL_ALWAYS_SOFTWARE": "1",
-		"WEBKIT_DISABLE_COMPOSITING_MODE": "1",
+		"WEBKIT_DISABLE_COMPOSITING_MODE": "1"
 	},
-	"postCreateCommand": "chmod +x .devcontainer/postCreateCommand.sh && ./.devcontainer/postCreateCommand.sh",
+	"postCreateCommand": "chmod -R 777 /workspaces/tauri-calendar && apt update && apt install -y libcanberra-gtk-module libcanberra-gtk3-module && apt install -y libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev",
 	"remoteUser": "root"
 }
