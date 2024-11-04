@@ -1,0 +1,13 @@
+{
+	"name": "Node.js & TypeScript",
+	"image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm",
+	"features": {
+		"ghcr.io/devcontainers/features/rust:1": {}
+	},
+	"containerEnv": {
+		"LIBGL_ALWAYS_SOFTWARE": "1",
+		"WEBKIT_DISABLE_COMPOSITING_MODE": "1",
+	},
+	"postCreateCommand": "chmod +x .devcontainer/postCreateCommand.sh && ./.devcontainer/postCreateCommand.sh",
+	"remoteUser": "root"
+}
