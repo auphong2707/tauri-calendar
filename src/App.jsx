@@ -1,7 +1,7 @@
 import './App.css'
 import { Helmet } from 'react-helmet'
 import CssBaseLine from '@mui/material/CssBaseline'
-import BasicDateCalendar from './BasicDateCalendar'
+import SideBar from './features/sidebar/SideBar'
 
 function App() {
   return (
@@ -25,30 +25,11 @@ function App() {
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
         />
       </Helmet>
-      
+
       <CssBaseLine />
 
       <div className='container'>
-        {/* Sidebar Section */}
-        <div className='sidebar'>
-            
-          
-          {/* Top Section */}
-          <div className='sidebar-calendar'>
-            <div className='sidebar-calendar-header'>
-              <h2>Calendar</h2>
-            </div>
-            <BasicDateCalendar/>
-          </div>
-
-
-          {/* Bottom Section */}
-
-        </div>
-        {/* Main Section */}
-        <div className='main-content'>
-          Main Content Goes Here
-        </div>
+        <SideBar />
       </div>
     </>
   )

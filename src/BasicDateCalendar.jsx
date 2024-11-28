@@ -8,6 +8,10 @@ export default function BasicDateCalendar() {
       <DateCalendar 
         showDaysOutsideCurrentMonth 
         fixedWeekNumber={6}
+        sx={{
+          backgroundColor: 'white',
+          borderRadius: '10px',
+        }}
       />
     </LocalizationProvider>
   );

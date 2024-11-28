@@ -6,22 +6,13 @@
   height: 100vh;
 }
 
-/* Sidebar */
-.sidebar {
-  background-color: #f0f0d8;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  border-right: 1px solid #ccc;
-  height: 100vh;
-}
-
-.sidebar-calendar{
+.sidebar-component{
   margin: 10px;
-  border: 1px solid #ccc;
+  margin-top: 0px;
+  /* border: 1px solid #ccc; */
 }
 
-.sidebar-calendar-header {
+.sidebar-header {
   background-color: olive;
   border-radius: 10px;
   height: 50px;
@@ -29,6 +20,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 10px;
 }
 
 /* Main Content */
