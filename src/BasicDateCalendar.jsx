@@ -4,10 +4,11 @@ import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 
 export default function BasicDateCalendar() {
   return (
-    <div>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DateCalendar/>
-      </LocalizationProvider>
-    </div>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <DateCalendar 
+        showDaysOutsideCurrentMonth 
+        fixedWeekNumber={6}
+      />
+    </LocalizationProvider>
   );
 }
