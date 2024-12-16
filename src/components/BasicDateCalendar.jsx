@@ -12,6 +12,7 @@ export default function BasicDateCalendar() {
           backgroundColor: 'white',
           borderRadius: '10px',
         }}
+        timezone="system"
       />
     </LocalizationProvider>
   );

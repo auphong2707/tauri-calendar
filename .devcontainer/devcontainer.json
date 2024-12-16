@@ -9,7 +9,8 @@
 	},
 	"containerEnv": {
 		"LIBGL_ALWAYS_SOFTWARE": "1",
-		"WEBKIT_DISABLE_COMPOSITING_MODE": "1"
+		"WEBKIT_DISABLE_COMPOSITING_MODE": "1",
+		"TZ": "Asia/Ho_Chi_Minh" // Set your desired timezone here
 	},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],

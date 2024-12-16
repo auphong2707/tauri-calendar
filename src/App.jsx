@@ -1,9 +1,20 @@
 import './App.css'
+import { useState } from 'react'
 import { Helmet } from 'react-helmet'
 import CssBaseLine from '@mui/material/CssBaseline'
-import SideBar from './features/sidebar/SideBar'
+import SideBar from './components/SideBar'
+import { useTheme } from '@mui/material/styles'
+import Box from '@mui/material/Box';
+import AppBar from './components/AppBar'
+import MainContent from './components/Main'
 
 function App() {
+  {/* Sidebar's State */}
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+
+  {/* Theme */}
+  const theme = useTheme()
+
   return (
     <>
       <Helmet>
@@ -25,12 +36,18 @@ function App() {
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
         />
       </Helmet>
+      
+      <Box sx={{ display: 'flex' }}>
+        <CssBaseLine />
+        {/* AppBar */}
+        <AppBar isSidebarOpen={isSidebarOpen} openSidebar={() => setIsSidebarOpen(true)}/>
 
-      <CssBaseLine />
+        {/* Sidebar */}
+        <SideBar isSidebarOpen={isSidebarOpen} closeSidebar={() => setIsSidebarOpen(false)} theme={theme}/>
 
-      <div className='container'>
-        <SideBar />
-      </div>
+        {/* Main Content */}
+        <MainContent isSidebarOpen={isSidebarOpen}/>
+      </Box>
     </>
   )
 }
