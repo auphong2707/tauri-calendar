@@ -21,7 +21,7 @@ export default function DigitalClock() {
   }, []);
 
   return (
-    <Box display="flex" alignItems="center">
+    <Box display="flex" alignItems="center" sx={{ backgroundColor: 'white', borderRadius: '10px', padding: '3px 20px 3px 20px' }}>
       <AccessTimeIcon style={{ fontSize: '2rem' }} />
       <Typography variant="h4" sx={{ marginLeft: 1 }}>{time}</Typography>
     </Box>
