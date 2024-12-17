@@ -9,7 +9,8 @@ import { styled } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
+import ViewSidebarIcon from '@mui/icons-material/ViewSidebar';
+import AddTaskIcon from '@mui/icons-material/AddTask';
 import MuiAppBar from '@mui/material/AppBar';
 
 
@@ -36,7 +37,7 @@ const StyledAppBar = styled(MuiAppBar, {
   ],
 }));
 
-export default function AppBar({ isSidebarOpen, openSidebar }) {
+export default function AppBar({ isSidebarOpen, openSidebar, openTaskModal }) {
   return (
     <StyledAppBar position="fixed" open={isSidebarOpen} sx={{ backgroundColor: 'olive'}}>
         <Toolbar sx={{ height: FEATURE_CONSTANT.BAR_HEIGHT }}>
@@ -52,11 +53,24 @@ export default function AppBar({ isSidebarOpen, openSidebar }) {
               isSidebarOpen && { display: 'none' },
             ]}
           >
-            <MenuIcon />
+            <ViewSidebarIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
             Automatic Tasks Scheduling Calendar Application
           </Typography>
+
+          <IconButton
+            color="inherit"
+            aria-label="add task"
+            onClick={openTaskModal}
+            edge="end"
+            sx={[{
+              ml: 'auto',
+            }]}
+          >
+            <AddTaskIcon />
+          </IconButton>
+
         </Toolbar>
       </StyledAppBar>
   )
@@ -64,5 +78,7 @@ export default function AppBar({ isSidebarOpen, openSidebar }) {
 
 AppBar.propTypes = {
   isSidebarOpen: PropTypes.bool.isRequired,
-  openSidebar: PropTypes.func.isRequired
+  openSidebar: PropTypes.func.isRequired,
+  isTaskModalOpen: PropTypes.bool.isRequired,
+  openTaskModal: PropTypes.func.isRequired,
 }

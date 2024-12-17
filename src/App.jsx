@@ -7,6 +7,7 @@ import { useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box';
 import AppBar from './components/AppBar'
 import MainContent from './components/Main'
+import TaskModal from './components/TaskModal'
 
 function App() {
   {/* Sidebar's State */}
@@ -14,6 +15,8 @@ function App() {
 
   {/* Theme */}
   const theme = useTheme()
+
+  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
 
   return (
     <>
@@ -36,11 +39,19 @@ function App() {
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
         />
       </Helmet>
-      
+      <CssBaseLine />
+
+      {/* Task Modal */}
+      <TaskModal isOpen={isTaskModalOpen} handleClose={() => setIsTaskModalOpen(false)} />
+
+      {/* Main Container */}
       <Box sx={{ display: 'flex' }}>
-        <CssBaseLine />
         {/* AppBar */}
-        <AppBar isSidebarOpen={isSidebarOpen} openSidebar={() => setIsSidebarOpen(true)}/>
+        <AppBar 
+          isSidebarOpen={isSidebarOpen} 
+          openSidebar={() => setIsSidebarOpen(true)}
+          openTaskModal={() => setIsTaskModalOpen(true)}
+        />
 
         {/* Sidebar */}
         <SideBar isSidebarOpen={isSidebarOpen} closeSidebar={() => setIsSidebarOpen(false)} theme={theme}/>
