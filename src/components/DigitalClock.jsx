@@ -1,6 +1,10 @@
-import { useState, useEffect } from 'react';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
+// Desc: Digital clock component that displays the current time in 24-hour format
 
+// Importing necessary modules
+import { useState, useEffect } from 'react';
+
+// Importing Material-UI components
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 

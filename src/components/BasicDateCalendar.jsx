@@ -1,3 +1,6 @@
+// Desc: BasicDateCalendar component that displays a calendar with the current date highlighted
+
+// Import Material UI components
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';

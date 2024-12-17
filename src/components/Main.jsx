@@ -1,7 +1,13 @@
-import { styled } from '@mui/material/styles';
+// Desc:
+
+// Import necessary modules
 import { FEATURE_CONSTANT } from '../constant';
-import { Typography } from '@mui/material';
 import PropTypes from 'prop-types';
+
+// Import Material UI components
+import { styled } from '@mui/material/styles';
+import { Typography } from '@mui/material';
+
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme }) => ({

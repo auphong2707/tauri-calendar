@@ -1,11 +1,17 @@
+// Desc:
+
+// Import necessary modules
+import { FEATURE_CONSTANT } from '../constant';
+import PropTypes from 'prop-types';
+
+// Import Material UI components
 import { styled } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import MuiAppBar from '@mui/material/AppBar';
-import { FEATURE_CONSTANT } from '../constant';
-import PropTypes from 'prop-types';
+
 
 
 const StyledAppBar = styled(MuiAppBar, {
