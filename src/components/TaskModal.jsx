@@ -96,12 +96,12 @@ const TaskModal = ({ isOpen, handleClose }) => {
     const taskData = {
       task_title: taskTitle,
       task_group: taskGroup,
-      deadline_date: deadlineDate.format(),
-      deadline_time: deadlineTime.format(),
+      deadline_date: deadlineDate.format('YYYY-MM-DD'),
+      deadline_time: deadlineTime.format('HH:mm'),
       restrict,
-      task_date: taskDate.format(),
-      from_time: fromTime.format(),
-      to_time: toTime.format(),
+      task_date: taskDate.format('YYYY-MM-DD'),
+      from_time: fromTime.format('HH:mm'),
+      to_time: toTime.format('HH:mm'),
       task_description: taskDescription,
     };
 
