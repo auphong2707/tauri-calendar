@@ -6,17 +6,19 @@ import SideBar from './components/SideBar'
 import { useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box';
 import AppBar from './components/AppBar'
-import MainContent from './components/Main'
+import MainContent from './components/MainContent'
 import TaskModal from './components/TaskModal'
 
+import dayjs from 'dayjs'
+
 function App() {
-  {/* Sidebar's State */}
+  {/* State */}
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+  const [dateViewBegin, setDateViewBegin] = useState(dayjs());
 
   {/* Theme */}
   const theme = useTheme()
-
-  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
 
   return (
     <>
@@ -51,13 +53,14 @@ function App() {
           isSidebarOpen={isSidebarOpen} 
           openSidebar={() => setIsSidebarOpen(true)}
           openTaskModal={() => setIsTaskModalOpen(true)}
+          setTaskViewBegin={setDateViewBegin}
         />
 
         {/* Sidebar */}
         <SideBar isSidebarOpen={isSidebarOpen} closeSidebar={() => setIsSidebarOpen(false)} theme={theme}/>
 
         {/* Main Content */}
-        <MainContent isSidebarOpen={isSidebarOpen}/>
+        <MainContent isSidebarOpen={isSidebarOpen} dateViewBegin={dateViewBegin}/>
       </Box>
     </>
   )

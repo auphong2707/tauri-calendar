@@ -12,6 +12,8 @@ import IconButton from '@mui/material/IconButton';
 import ViewSidebarIcon from '@mui/icons-material/ViewSidebar';
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import MuiAppBar from '@mui/material/AppBar';
+import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
+import ArrowCirclelLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 
 
 
@@ -37,7 +39,7 @@ const StyledAppBar = styled(MuiAppBar, {
   ],
 }));
 
-export default function AppBar({ isSidebarOpen, openSidebar, openTaskModal }) {
+export default function AppBar({ isSidebarOpen, openSidebar, openTaskModal, setTaskViewBegin }) {
   return (
     <StyledAppBar position="fixed" open={isSidebarOpen} sx={{ backgroundColor: 'olive'}}>
         <Toolbar sx={{ height: FEATURE_CONSTANT.BAR_HEIGHT }}>
@@ -55,18 +57,33 @@ export default function AppBar({ isSidebarOpen, openSidebar, openTaskModal }) {
           >
             <ViewSidebarIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
+          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             Automatic Tasks Scheduling Calendar Application
           </Typography>
+
+          <IconButton
+            color="inherit"
+            aria-label="set task view begin"
+            onClick={() => setTaskViewBegin((prev) => prev.subtract(1, 'day'))}
+            edge="end"
+          >
+            <ArrowCirclelLeftIcon />
+          </IconButton>
+
+          <IconButton
+            color="inherit"
+            aria-label="set task view begin"
+            onClick={() => setTaskViewBegin((prev) => prev.add(1, 'day'))}
+            edge="end"
+          >
+            <ArrowCircleRightIcon />
+          </IconButton>
 
           <IconButton
             color="inherit"
             aria-label="add task"
             onClick={openTaskModal}
             edge="end"
-            sx={[{
-              ml: 'auto',
-            }]}
           >
             <AddTaskIcon />
           </IconButton>
@@ -80,4 +97,5 @@ AppBar.propTypes = {
   isSidebarOpen: PropTypes.bool.isRequired,
   openSidebar: PropTypes.func.isRequired,
   openTaskModal: PropTypes.func.isRequired,
+  setTaskViewBegin: PropTypes.func.isRequired,
 }

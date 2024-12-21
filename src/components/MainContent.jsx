@@ -123,13 +123,13 @@ DayColumn.propTypes = {
   index: PropTypes.number.isRequired,
 };
 
-export default function MainContent({ isSidebarOpen }) {
+export default function MainContent({ isSidebarOpen, dateViewBegin }) {
   return (
     <Main open={isSidebarOpen} >
       <Grid container columns={7} sx={{ height: '100%' }}>
         {Array.from({ length: 7 }).map((_, index) => (
           <Grid key={index} size={1} item sx={{ height: '100%' }}>
-            <DayColumn day={dayjs().add(index, 'day').format("dddd\nDD/MM/YYYY").toString()} index={index} />
+            <DayColumn day={dateViewBegin.add(index, 'day').format("dddd\nDD/MM/YYYY").toString()} index={index} />
           </Grid>
         ))}
       </Grid>
@@ -139,4 +139,5 @@ export default function MainContent({ isSidebarOpen }) {
 
 MainContent.propTypes = {
   isSidebarOpen: PropTypes.bool.isRequired,
+  dateViewBegin: PropTypes.object.isRequired,
 }
