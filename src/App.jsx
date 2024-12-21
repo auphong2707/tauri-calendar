@@ -57,7 +57,13 @@ function App() {
         />
 
         {/* Sidebar */}
-        <SideBar isSidebarOpen={isSidebarOpen} closeSidebar={() => setIsSidebarOpen(false)} theme={theme}/>
+        <SideBar 
+          isSidebarOpen={isSidebarOpen} 
+          closeSidebar={() => setIsSidebarOpen(false)}
+          theme={theme}
+          dayViewBegin={dateViewBegin}
+          setDayViewBegin={setDateViewBegin}
+        />
 
         {/* Main Content */}
         <MainContent isSidebarOpen={isSidebarOpen} dateViewBegin={dateViewBegin}/>

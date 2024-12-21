@@ -24,7 +24,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   height: FEATURE_CONSTANT.BAR_HEIGHT,
 }));
 
-export default function PersistentDrawer({ isSidebarOpen, closeSidebar, theme }) {
+export default function PersistentDrawer({ isSidebarOpen, closeSidebar, dayViewBegin, setDayViewBegin, theme }) {
 
   return (
     <Drawer
@@ -54,7 +54,7 @@ export default function PersistentDrawer({ isSidebarOpen, closeSidebar, theme })
       {/* Upper Section */}
       <Divider sx={{marginBottom: 2}} />
 
-      <BasicDateCalendar />
+      <BasicDateCalendar dayViewBegin={dayViewBegin} setDayViewBegin={setDayViewBegin}/>
 
       <Divider sx={{marginBottom: 2, marginTop: 2}}/>
     </Drawer>
@@ -64,5 +64,7 @@ export default function PersistentDrawer({ isSidebarOpen, closeSidebar, theme })
 PersistentDrawer.propTypes = {
   isSidebarOpen: PropTypes.bool.isRequired,
   closeSidebar: PropTypes.func.isRequired,
+  dayViewBegin: PropTypes.object.isRequired,
+  setDayViewBegin: PropTypes.func.isRequired,
   theme: PropTypes.object.isRequired,
 };
