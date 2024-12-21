@@ -94,19 +94,19 @@ const TaskModal = ({ isOpen, handleClose }) => {
 
   const handleSubmit = async () => {
     const taskData = {
-      title: taskTitle,
-      group: taskGroup,
-      deadlineDate: deadlineDate.format(),
-      deadlineTime: deadlineTime.format(),
+      task_title: taskTitle,
+      task_group: taskGroup,
+      deadline_date: deadlineDate.format(),
+      deadline_time: deadlineTime.format(),
       restrict,
-      taskDate: taskDate.format(),
-      fromTime: fromTime.format(),
-      toTime: toTime.format(),
-      description: taskDescription,
+      task_date: taskDate.format(),
+      from_time: fromTime.format(),
+      to_time: toTime.format(),
+      task_description: taskDescription,
     };
 
     try {
-      const response = await invoke('create_task', taskData);
+      const response = await invoke('create_task', { task: taskData });
       handleClose();
       console.log(response);
     } catch (error) {
