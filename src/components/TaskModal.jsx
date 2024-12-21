@@ -24,6 +24,9 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimeField } from '@mui/x-date-pickers/TimeField';
 
+// Tauri API
+import { invoke } from '@tauri-apps/api/core';
+
 // CLDDatePicker component
 const CLDDatePicker = ({title, value, setValue}) => {
   return (
@@ -40,12 +43,12 @@ const CLDDatePicker = ({title, value, setValue}) => {
 
 CLDDatePicker.propTypes = {
   title: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.object.isRequired,
   setValue: PropTypes.func.isRequired
 };
 
 // CLDTimeRange component
-const CLDTimeRange = ({fromValue, setFromValue, toTime, setToValue}) => {
+const CLDTimeRange = ({fromValue, setFromValue, toValue, setToValue}) => {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -59,7 +62,7 @@ const CLDTimeRange = ({fromValue, setFromValue, toTime, setToValue}) => {
 
         <TimeField
           label="To"
-          value={toTime}
+          value={toValue}
           onChange={(newValue) => setToValue(newValue)}
         />
       </LocalizationProvider>
@@ -67,9 +70,9 @@ const CLDTimeRange = ({fromValue, setFromValue, toTime, setToValue}) => {
   );
 }
 CLDTimeRange.propTypes = {
-  fromValue: PropTypes.string.isRequired,
+  fromValue: PropTypes.object.isRequired,
   setFromValue: PropTypes.func.isRequired,
-  toTime: PropTypes.string.isRequired,
+  toValue: PropTypes.object.isRequired,
   setToValue: PropTypes.func.isRequired
 };
 
@@ -88,6 +91,29 @@ const TaskModal = ({ isOpen, handleClose }) => {
   const [toTime, setToTime] = useState(dayjs());
 
   const [taskDescription, setTaskDescription] = useState('');
+
+  const handleSubmit = async () => {
+    const taskData = {
+      title: taskTitle,
+      group: taskGroup,
+      deadlineDate: deadlineDate.format(),
+      deadlineTime: deadlineTime.format(),
+      restrict,
+      taskDate: taskDate.format(),
+      fromTime: fromTime.format(),
+      toTime: toTime.format(),
+      description: taskDescription,
+    };
+
+    try {
+      const response = await invoke('create_task', taskData);
+      handleClose();
+      console.log(response);
+    } catch (error) {
+      console.error('Error creating task:', error);
+    }
+  };
+
 
   useEffect(() => {
     if (isOpen) {
@@ -125,7 +151,7 @@ const TaskModal = ({ isOpen, handleClose }) => {
           <Grid container spacing={2}>
             {/* LINE 1 */}
             {/* Task title textfield */}
-            <Grid size={9}>
+            <Grid item size={9}>
               <TextField 
                 id='task-title' 
                 label='Task Title' 
@@ -136,7 +162,7 @@ const TaskModal = ({ isOpen, handleClose }) => {
             </Grid>
 
             {/* Task group select */}
-            <Grid size={3}>
+            <Grid item size={3}>
               <FormControl fullWidth>
                 <InputLabel id="task-group-select-label">Task Group</InputLabel>
                 <Select
@@ -155,7 +181,7 @@ const TaskModal = ({ isOpen, handleClose }) => {
             {/* END LINE 1 */}
 
             {/* LINE 2 */}
-            <Grid size={2} style={{ display: 'flex', alignItems: 'center' }}>
+            <Grid item size={2} style={{ display: 'flex', alignItems: 'center' }}>
               <Typography 
                 variant="h5" 
                 backgroundColor='olive' 
@@ -167,23 +193,23 @@ const TaskModal = ({ isOpen, handleClose }) => {
               </Typography>
             </Grid>
 
-            <Grid size={3} style={{ display: 'flex', alignItems: 'center' }}>
+            <Grid item size={3} style={{ display: 'flex', alignItems: 'center' }}>
               <CLDDatePicker title="Deadline date" value={deadlineDate} setValue={setDeadlineDate} />
             </Grid>
 
-            <Grid size={3} style={{ display: 'flex', alignItems: 'center' }}>
+            <Grid item size={3} style={{ display: 'flex', alignItems: 'center' }}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <TimeField label="Deadline time" value={deadlineTime} onChange={(newValue) => setDeadlineTime(newValue)} />
               </LocalizationProvider>
             </Grid>
 
-            <Grid size={4}>
+            <Grid item size={4}>
             </Grid>            
 
             {/* END LINE 2 */}
 
             {/* LINE 3 */}
-            <Grid size={2} style={{ display: 'flex', alignItems: 'center' }}>
+            <Grid item size={2} style={{ display: 'flex', alignItems: 'center' }}>
             <Typography 
                 variant="h5" 
                 backgroundColor='olive' 
@@ -195,28 +221,28 @@ const TaskModal = ({ isOpen, handleClose }) => {
               </Typography>
             </Grid>
 
-            <Grid size={2} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Grid item size={2} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               {/* Restrict switch */}
               <FormControlLabel 
-                control={<Switch checked={restrict} onChange={(e) => setRestrict(e.target.checked)} />}
+                control={<Switch value={restrict} checked={restrict} onChange={(e) => setRestrict(e.target.checked)} />}
                 label="Restrict"
               />
             </Grid>
             
-            <Grid size={8}>
+            <Grid item size={8}>
               <Grid container spacing={2}>
-                <Grid size={3}>
+                <Grid item size={3}>
                   <CLDDatePicker title="Task date" value={taskDate} setValue={setTaskDate} />
                 </Grid>
-                <Grid size={9}>
-                  <CLDTimeRange fromValue={fromTime} setFromValue={setFromTime} toTime={toTime} setToValue={setToTime} />
+                <Grid item size={9}>
+                  <CLDTimeRange fromValue={fromTime} setFromValue={setFromTime} toValue={toTime} setToValue={setToTime} />
                 </Grid>
               </Grid>
             </Grid>
             {/* END LINE 3 */}
 
             {/* LINE 4 */}
-            <Grid size={12} style={{ display: 'flex', alignItems: 'center' }}>
+            <Grid item size={12} style={{ display: 'flex', alignItems: 'center' }}>
               <Typography variant="h5" backgroundColor='olive' color='white' padding={'10px 20px 10px 20px'} borderRadius={'0.5rem'}>
                 Task Description:
               </Typography>
@@ -224,7 +250,7 @@ const TaskModal = ({ isOpen, handleClose }) => {
             {/* END LINE 4 */}
 
             {/* LINE 5 */}
-            <Grid size={12}>
+            <Grid item size={12}>
               <TextField 
                 id='task-description'
                 multiline
@@ -247,7 +273,7 @@ const TaskModal = ({ isOpen, handleClose }) => {
           <Button onClick={handleClose} sx={{ color: 'white', background: 'olive', padding: '10px 20px 10px 20px' }}>
             Cancel
           </Button>
-          <Button onClick={handleClose} sx={{ color: 'white', background: 'olive', padding: '10px 20px 10px 20px' }}>
+          <Button type="submit" onClick={handleSubmit} sx={{ color: 'white', background: 'olive', padding: '10px 20px 10px 20px' }}>
             Accept
           </Button>
         </div>

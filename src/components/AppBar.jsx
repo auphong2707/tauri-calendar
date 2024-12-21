@@ -79,6 +79,5 @@ export default function AppBar({ isSidebarOpen, openSidebar, openTaskModal }) {
 AppBar.propTypes = {
   isSidebarOpen: PropTypes.bool.isRequired,
   openSidebar: PropTypes.func.isRequired,
-  isTaskModalOpen: PropTypes.bool.isRequired,
   openTaskModal: PropTypes.func.isRequired,
 }
