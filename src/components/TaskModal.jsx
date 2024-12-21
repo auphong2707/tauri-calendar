@@ -137,7 +137,7 @@ const TaskModal = ({ isOpen, handleClose }) => {
       fullWidth
       PaperProps={{
         style: {
-          maxWidth: '70%',
+          maxWidth: '90%',
           borderRadius: '10px',
         },
       }}
