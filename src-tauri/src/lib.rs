@@ -1,7 +1,7 @@
 mod db;
 mod schema;
 
-use db::{create_task, delete_task, read_tasks, update_task};
+use db::{create_task, delete_task, get_task_list, update_task};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -22,7 +22,7 @@ pub fn run() {
     })
     .invoke_handler(tauri::generate_handler![
       create_task,
-      read_tasks,
+      get_task_list,
       update_task,
       delete_task
     ])

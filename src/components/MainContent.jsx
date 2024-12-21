@@ -4,11 +4,15 @@
 import { FEATURE_CONSTANT } from '../constant';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
+import { useState, useEffect } from 'react';
 
 // Import Material UI components
 import { styled } from '@mui/material/styles';
 import { Box, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
+
+// Tauri API
+import { invoke } from '@tauri-apps/api/core';
 
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
@@ -37,7 +41,17 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
 );
 
 const DayColumn = ({ day, index }) => {
-  const [dayName, date] = day.split('\n');
+  const dayName = day.format("dddd");
+  const date = day.format("DD/MM/YYYY");
+
+  const response = invoke('get_task_list', { date: day.format('YYYY-MM-DD') });
+  const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    response.then((taskList) => {
+      setTasks(taskList.map(task => ({ ...task, key: task.id })));
+    });
+  }, [day, response]);
 
   const DayColumnHeader = () => (
     <Box 
@@ -97,15 +111,38 @@ const DayColumn = ({ day, index }) => {
         borderColor: 'white',
         height: '90%',
         textAlign: 'center',
-        alignContent: 'center',
         backgroundColor: 'transparent',
-        display: 'flex',
-        flexDirection: 'column',
         zIndex: 1,
         position: 'relative',
       }}
     >
-      <Typography variant="h6" color='black'>Content</Typography>
+      {tasks.map(task => {
+        // Calculate start and end positions
+        const fromTimeMinutes = dayjs(task.from_time, "HH:mm").hour() * 60 + dayjs(task.from_time, "HH:mm").minute();
+        const toTimeMinutes = dayjs(task.to_time, "HH:mm").hour() * 60 + dayjs(task.to_time, "HH:mm").minute();
+
+        const startPosition = (fromTimeMinutes / 1440) * 100; // Start position as a percentage
+        const height = ((toTimeMinutes - fromTimeMinutes) / 1440) * 100; // Height as a percentage
+
+        return (
+          <Box 
+            key={task.id} 
+            sx={{
+              top: `${startPosition}%`,
+              width: '100%',
+              height: `${height}%`,
+              position: 'absolute',
+              backgroundColor: 'olive',
+              zIndex: 2,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Typography variant="body1" color='white'>{task.task_title}</Typography>
+          </Box>
+        );
+      })}
     </Box>
   );
 
@@ -119,7 +156,7 @@ const DayColumn = ({ day, index }) => {
 };
 
 DayColumn.propTypes = {
-  day: PropTypes.string.isRequired,
+  day: PropTypes.object.isRequired,
   index: PropTypes.number.isRequired,
 };
 
@@ -129,7 +166,7 @@ export default function MainContent({ isSidebarOpen, dateViewBegin }) {
       <Grid container columns={7} sx={{ height: '100%' }}>
         {Array.from({ length: 7 }).map((_, index) => (
           <Grid key={index} size={1} item sx={{ height: '100%' }}>
-            <DayColumn day={dateViewBegin.add(index, 'day').format("dddd\nDD/MM/YYYY").toString()} index={index} />
+            <DayColumn day={dateViewBegin.add(index, 'day')} index={index} />
           </Grid>
         ))}
       </Grid>

@@ -67,13 +67,14 @@ pub fn create_task(task: Task) -> String {
 }
 
 #[tauri::command]
-pub fn read_tasks() -> Vec<Task> {
+pub fn get_task_list(date: &str) -> Vec<Task> {
     use crate::schema::tasks::dsl::*;
 
     let mut connection = establish_db_connection();
     tasks
+        .filter(task_date.eq(date))
         .load::<Task>(&mut connection)
-        .unwrap_or_else(|_| vec![])
+        .expect("Error loading tasks")
 }
 
 #[tauri::command]
