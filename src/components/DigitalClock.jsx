@@ -7,10 +7,12 @@ import { useState, useEffect } from 'react';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import { useTheme } from '@mui/material/styles';
 
 
 export default function DigitalClock() {
   const [time, setTime] = useState(new Date().toLocaleTimeString('en-GB', { hour12: false }));
+  const theme = useTheme();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -21,7 +23,7 @@ export default function DigitalClock() {
   }, []);
 
   return (
-    <Box display="flex" alignItems="center" sx={{ backgroundColor: 'white', borderRadius: '10px', padding: '3px 20px 3px 20px' }}>
+    <Box display="flex" alignItems="center" sx={{ backgroundColor: theme.palette.background.paper, borderRadius: '10px', padding: '3px 20px 3px 20px' }}>
       <AccessTimeIcon style={{ fontSize: '2rem' }} />
       <Typography variant="h4" sx={{ marginLeft: 1 }}>{time}</Typography>
     </Box>

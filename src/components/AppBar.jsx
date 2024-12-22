@@ -5,7 +5,7 @@ import { FEATURE_CONSTANT } from '../constant';
 import PropTypes from 'prop-types';
 
 // Import Material UI components
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
@@ -14,8 +14,6 @@ import AddTaskIcon from '@mui/icons-material/AddTask';
 import MuiAppBar from '@mui/material/AppBar';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import ArrowCirclelLeftIcon from '@mui/icons-material/ArrowCircleLeft';
-
-
 
 const StyledAppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
@@ -40,8 +38,10 @@ const StyledAppBar = styled(MuiAppBar, {
 }));
 
 export default function AppBar({ isSidebarOpen, openSidebar, openTaskModal, setTaskViewBegin }) {
+  const theme = useTheme();
+  
   return (
-    <StyledAppBar position="fixed" open={isSidebarOpen} sx={{ backgroundColor: 'olive'}}>
+    <StyledAppBar position="fixed" open={isSidebarOpen} sx={{ backgroundColor: theme.palette.primary.main }}>
         <Toolbar sx={{ height: FEATURE_CONSTANT.BAR_HEIGHT }}>
           <IconButton
             color="inherit"

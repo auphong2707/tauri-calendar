@@ -10,6 +10,7 @@ import { useState, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import { Box, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
+import { useTheme } from '@mui/material/styles';
 
 // Tauri API
 import { invoke } from '@tauri-apps/api/core';
@@ -41,6 +42,8 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
 );
 
 const DayColumn = ({ day, index }) => {
+  const theme = useTheme();
+
   const dayName = day.format("dddd");
   const date = day.format("DD/MM/YYYY");
 
@@ -58,12 +61,12 @@ const DayColumn = ({ day, index }) => {
   const DayColumnHeader = () => (
     <Box 
       sx={{ 
-        borderLeft: (index !== 0 ? 1 : 0), 
-        borderColor: 'white', 
+        borderLeft: (index !== 0 ? 2 : 0),
+        borderColor: 'white',
         height: '10%', 
         textAlign: 'center',
         alignContent: 'center',
-        backgroundColor: 'olive',
+        backgroundColor: theme.palette.primary.main,
         zIndex: 0,
       }}
     >
@@ -76,13 +79,12 @@ const DayColumn = ({ day, index }) => {
   const DayColumnBackground = () => (
     <Box
       sx={{
-        borderLeft: (index !== 0 ? 1 : 0),
+        borderLeft: (index !== 0 ? 2 : 0),
         borderColor: 'white',
         height: '90%',
         width: '100%',
         textAlign: 'center',
         alignContent: 'center',
-        backgroundColor: 'white',
         display: 'flex',
         flexDirection: 'column',
         zIndex: 0,
@@ -95,9 +97,9 @@ const DayColumn = ({ day, index }) => {
           key={rowIndex}
           sx={{
             flexGrow: 1,
-            backgroundColor: '#F5F5DC',
-            borderBottom: 1,
-            borderTop: (rowIndex === 0 ? 1 : 0),
+            backgroundColor: theme.palette.primary.light,
+            borderBottom: 2,
+            borderTop: (rowIndex === 0 ? 2 : 0),
             borderColor: 'white',
           }}
         >
@@ -109,7 +111,7 @@ const DayColumn = ({ day, index }) => {
   const DayColumnContent = () => (
     <Box
       sx={{
-        borderLeft: (index !== 0 ? 1 : 0),
+        borderLeft: (index !== 0 ? 2 : 0),
         borderColor: 'white',
         height: '90%',
         textAlign: 'center',
@@ -134,7 +136,7 @@ const DayColumn = ({ day, index }) => {
               width: '100%',
               height: `${height}%`,
               position: 'absolute',
-              backgroundColor: 'olive',
+              backgroundColor: theme.palette.primary.main,
               zIndex: 2,
               display: 'flex',
               justifyContent: 'center',

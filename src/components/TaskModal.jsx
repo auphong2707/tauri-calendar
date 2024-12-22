@@ -18,6 +18,7 @@ import {
   Typography
 } from '@mui/material';
 import Grid from '@mui/material/Grid2';
+import { useTheme } from '@mui/material/styles';
 
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -81,6 +82,7 @@ CLDTimeRange.propTypes = {
 
 // TaskModal component
 const TaskModal = ({ isOpen, handleClose }) => {
+  const theme = useTheme();
   // Set states
   const [taskTitle, setTaskTitle] = useState('');
   const [taskGroup, setTaskGroup] = useState('Normal');
@@ -138,7 +140,7 @@ const TaskModal = ({ isOpen, handleClose }) => {
         },
       }}
     >
-      <DialogTitle id="mini-modal-title" sx={{ backgroundColor: 'olive', color: 'white' }}>
+      <DialogTitle id="mini-modal-title" sx={{ backgroundColor: theme.palette.primary.main, color: 'white' }}>
         <Typography variant="h6" fullWidth textAlign='center'>Task Details</Typography>
       </DialogTitle>
 
@@ -180,7 +182,7 @@ const TaskModal = ({ isOpen, handleClose }) => {
             <Grid item size={2} style={{ display: 'flex', alignItems: 'center' }}>
               <Typography 
                 variant="h5" 
-                backgroundColor='olive' 
+                backgroundColor={theme.palette.primary.main}
                 color='white' 
                 padding={'10px 20px 10px 20px'}
                 borderRadius={'0.5rem'}
@@ -217,7 +219,7 @@ const TaskModal = ({ isOpen, handleClose }) => {
             <Grid item size={2} style={{ display: 'flex', alignItems: 'center' }}>
             <Typography 
                 variant="h5" 
-                backgroundColor='olive' 
+                backgroundColor={theme.palette.primary.main}
                 color='white' 
                 padding={'10px 20px 10px 20px'}
                 borderRadius={'0.5rem'}
@@ -248,7 +250,7 @@ const TaskModal = ({ isOpen, handleClose }) => {
             <Grid item size={8} display={restrict ? 'none' : 'block' }>
               <Grid container spacing={2}>
                 <Grid item size={6} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <Typography variant="h6" color='olive'>Duration (in minutes):</Typography>
+                  <Typography variant="h6" color={theme.palette.primary.main}>Duration (in minutes):</Typography>
                   <TextField 
                     type='number'
                     value={duration}
@@ -258,7 +260,7 @@ const TaskModal = ({ isOpen, handleClose }) => {
                   </TextField>
                 </Grid>
                 <Grid item size={6} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <Typography variant="h6" color='olive'>Max split:</Typography>
+                  <Typography variant="h6" color={theme.palette.primary.main}>Max split:</Typography>
                   <TextField 
                     type='number'
                     value={maxSplits}
@@ -273,7 +275,7 @@ const TaskModal = ({ isOpen, handleClose }) => {
 
             {/* LINE 4 */}
             <Grid item size={12} style={{ display: 'flex', alignItems: 'center' }}>
-              <Typography variant="h5" backgroundColor='olive' color='white' padding={'10px 20px 10px 20px'} borderRadius={'0.5rem'}>
+              <Typography variant="h5" backgroundColor={theme.palette.primary.main} color='white' padding={'10px 20px 10px 20px'} borderRadius={'0.5rem'}>
                 Task Description:
               </Typography>
             </Grid>
@@ -296,14 +298,14 @@ const TaskModal = ({ isOpen, handleClose }) => {
       </DialogContent>
 
       <DialogActions style={{ justifyContent: 'space-between', padding: '0px 25px 20px 25px' }}>
-        <Button onClick={handleClose} sx={{ color: 'white', background: 'olive', padding: '10px 20px 10px 20px' }}>
+        <Button onClick={handleClose} sx={{ color: 'white', backgroundColor: theme.palette.primary.main, padding: '10px 20px 10px 20px' }}>
           Delete
         </Button>
         <div style={{ display: 'flex', gap: '20px' }}>
-          <Button onClick={handleClose} sx={{ color: 'white', background: 'olive', padding: '10px 20px 10px 20px' }}>
+          <Button onClick={handleClose} sx={{ color: 'white', backgroundColor: theme.palette.primary.main, padding: '10px 20px 10px 20px' }}>
             Cancel
           </Button>
-          <Button type="submit" onClick={handleSubmit} sx={{ color: 'white', background: 'olive', padding: '10px 20px 10px 20px' }}>
+          <Button type="submit" onClick={handleSubmit} sx={{ color: 'white', backgroundColor: theme.palette.primary.main, padding: '10px 20px 10px 20px' }}>
             Accept
           </Button>
         </div>

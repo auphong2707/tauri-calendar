@@ -3,7 +3,6 @@ import { useState } from 'react'
 import { Helmet } from 'react-helmet'
 import CssBaseLine from '@mui/material/CssBaseline'
 import SideBar from './components/SideBar'
-import { useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box';
 import AppBar from './components/AppBar'
 import MainContent from './components/MainContent'
@@ -16,9 +15,6 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [dateViewBegin, setDateViewBegin] = useState(dayjs());
-
-  {/* Theme */}
-  const theme = useTheme()
 
   return (
     <>
@@ -60,7 +56,6 @@ function App() {
         <SideBar 
           isSidebarOpen={isSidebarOpen} 
           closeSidebar={() => setIsSidebarOpen(false)}
-          theme={theme}
           dayViewBegin={dateViewBegin}
           setDayViewBegin={setDateViewBegin}
         />

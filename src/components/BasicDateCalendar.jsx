@@ -7,8 +7,10 @@ import PropTypes from 'prop-types';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+import { useTheme } from '@mui/material/styles';
 
 export default function BasicDateCalendar({ dayViewBegin, setDayViewBegin }) {
+  const theme = useTheme();
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DateCalendar 
@@ -17,7 +19,7 @@ export default function BasicDateCalendar({ dayViewBegin, setDayViewBegin }) {
         onChange={(newValue) => setDayViewBegin(newValue)}
         fixedWeekNumber={6}
         sx={{
-          backgroundColor: 'white',
+          backgroundColor: theme.palette.background.paper,
           borderRadius: '10px',
         }}
         timezone="system"

@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 
 // Import Material UI components
 import { Divider, Drawer, IconButton } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
@@ -24,7 +24,8 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   height: FEATURE_CONSTANT.BAR_HEIGHT,
 }));
 
-export default function PersistentDrawer({ isSidebarOpen, closeSidebar, dayViewBegin, setDayViewBegin, theme }) {
+export default function PersistentDrawer({ isSidebarOpen, closeSidebar, dayViewBegin, setDayViewBegin }) {
+  const theme = useTheme();
 
   return (
     <Drawer
@@ -37,7 +38,7 @@ export default function PersistentDrawer({ isSidebarOpen, closeSidebar, dayViewB
           boxSizing: 'border-box',
           display: 'flex',
           flexDirection: 'column',
-          backgroundColor: '#f0f0d8',
+          backgroundColor: theme.palette.primary.light,
         }
       }}
       variant="persistent"
@@ -65,6 +66,5 @@ PersistentDrawer.propTypes = {
   isSidebarOpen: PropTypes.bool.isRequired,
   closeSidebar: PropTypes.func.isRequired,
   dayViewBegin: PropTypes.object.isRequired,
-  setDayViewBegin: PropTypes.func.isRequired,
-  theme: PropTypes.object.isRequired,
+  setDayViewBegin: PropTypes.func.isRequired
 };
