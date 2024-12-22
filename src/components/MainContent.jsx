@@ -44,15 +44,17 @@ const DayColumn = ({ day, index }) => {
   const dayName = day.format("dddd");
   const date = day.format("DD/MM/YYYY");
 
-  const response = invoke('get_task_list', { date: day.format('YYYY-MM-DD') });
-  const [tasks, setTasks] = useState([]);
+  const [taskList, setTaskList] = useState([]);
 
   useEffect(() => {
-    response.then((taskList) => {
-      setTasks(taskList.map(task => ({ ...task, key: task.id })));
-    });
-  }, [day, response]);
+    const fetchTaskList = async () => {
+      const tasks = await invoke('get_task_list', { date: day.format('YYYY-MM-DD') });
+      setTaskList(tasks);
+    };
 
+    fetchTaskList();
+  }, [day]);
+  
   const DayColumnHeader = () => (
     <Box 
       sx={{ 
@@ -116,7 +118,7 @@ const DayColumn = ({ day, index }) => {
         position: 'relative',
       }}
     >
-      {tasks.map(task => {
+      {taskList.map(task => {
         // Calculate start and end positions
         const fromTimeMinutes = dayjs(task.from_time, "HH:mm").hour() * 60 + dayjs(task.from_time, "HH:mm").minute();
         const toTimeMinutes = dayjs(task.to_time, "HH:mm").hour() * 60 + dayjs(task.to_time, "HH:mm").minute();
