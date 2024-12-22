@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -76,12 +76,16 @@ CLDTimeRange.propTypes = {
   setToValue: PropTypes.func.isRequired
 };
 
+
+
+
 // TaskModal component
 const TaskModal = ({ isOpen, handleClose }) => {
   // Set states
   const [taskTitle, setTaskTitle] = useState('');
   const [taskGroup, setTaskGroup] = useState('Normal');
 
+  const [haveDeadline, setHaveDeadline] = useState(true);
   const [deadlineDate, setDeadlineDate] = useState(dayjs());
   const [deadlineTime, setDeadlineTime] = useState(dayjs());
 
@@ -89,6 +93,8 @@ const TaskModal = ({ isOpen, handleClose }) => {
   const [taskDate, setTaskDate] = useState(dayjs());
   const [fromTime, setFromTime] = useState(dayjs());
   const [toTime, setToTime] = useState(dayjs());
+  const [duration, setDuration] = useState(0);
+  const [maxSplits, setMaxSplits] = useState(1);
 
   const [taskDescription, setTaskDescription] = useState('');
 
@@ -96,12 +102,15 @@ const TaskModal = ({ isOpen, handleClose }) => {
     const taskData = {
       task_title: taskTitle,
       task_group: taskGroup,
+      have_deadline: haveDeadline,
       deadline_date: deadlineDate.format('YYYY-MM-DD'),
       deadline_time: deadlineTime.format('HH:mm'),
-      restrict,
+      restrict: restrict,
       task_date: taskDate.format('YYYY-MM-DD'),
       from_time: fromTime.format('HH:mm'),
       to_time: toTime.format('HH:mm'),
+      duration: duration,
+      max_splits: maxSplits,
       task_description: taskDescription,
     };
 
@@ -113,19 +122,6 @@ const TaskModal = ({ isOpen, handleClose }) => {
       console.error('Error creating task:', error);
     }
   };
-
-
-  useEffect(() => {
-    if (isOpen) {
-      setTaskTitle('');
-      setTaskGroup('Normal');
-      setRestrict(true);
-      setTaskDate(dayjs());
-      setFromTime(dayjs());
-      setToTime(dayjs());
-      setTaskDescription('');
-    }
-  }, [isOpen]);
 
   return (
     <Dialog
@@ -193,17 +189,26 @@ const TaskModal = ({ isOpen, handleClose }) => {
               </Typography>
             </Grid>
 
-            <Grid item size={3} style={{ display: 'flex', alignItems: 'center' }}>
-              <CLDDatePicker title="Deadline date" value={deadlineDate} setValue={setDeadlineDate} />
+            <Grid item size={2} style={{ display: 'flex', alignItems: 'center', justifyContent: 'left' }}>
+              <FormControlLabel 
+                control={<Switch value={haveDeadline} checked={haveDeadline} onChange={(e) => setHaveDeadline(e.target.checked)} />}
+                label="Have deadline"
+              />
             </Grid>
 
-            <Grid item size={3} style={{ display: 'flex', alignItems: 'center' }}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <TimePicker label="Deadline time" value={deadlineTime} onChange={(newValue) => setDeadlineTime(newValue)} />
-              </LocalizationProvider>
-            </Grid>
+            <Grid item size={8} visibility={haveDeadline ? 'visible' : 'hidden' }>
+              <Grid container spacing={2}>
+                <Grid item size={4} style={{ display: 'flex', alignItems: 'center' }}>
+                  <CLDDatePicker title="Deadline date" value={deadlineDate} setValue={setDeadlineDate} />
+                </Grid>
 
-            <Grid item size={4}>
+                <Grid item size={4} style={{ display: 'flex', alignItems: 'center' }}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <TimePicker label="Deadline time" value={deadlineTime} onChange={(newValue) => setDeadlineTime(newValue)} />
+                  </LocalizationProvider>
+                </Grid>
+                <Grid item size={4}></Grid>
+              </Grid>
             </Grid>            
 
             {/* END LINE 2 */}
@@ -221,7 +226,7 @@ const TaskModal = ({ isOpen, handleClose }) => {
               </Typography>
             </Grid>
 
-            <Grid item size={2} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Grid item size={2} style={{ display: 'flex', alignItems: 'center', justifyContent: 'left' }}>
               {/* Restrict switch */}
               <FormControlLabel 
                 control={<Switch value={restrict} checked={restrict} onChange={(e) => setRestrict(e.target.checked)} />}
@@ -229,19 +234,39 @@ const TaskModal = ({ isOpen, handleClose }) => {
               />
             </Grid>
             
-            <Grid item size={8} visibility={restrict ? 'visible' : 'hidden' }>
+            <Grid item size={8} display={restrict ? 'block' : 'none' }>
               <Grid container spacing={2}>
-                <Grid item size={3}>
+                <Grid item size={4}>
                   <CLDDatePicker title="Task date" value={taskDate} setValue={setTaskDate} />
                 </Grid>
-                <Grid item size={9}>
+                <Grid item size={8}>
                   <CLDTimeRange fromValue={fromTime} setFromValue={setFromTime} toValue={toTime} setToValue={setToTime} />
                 </Grid>
               </Grid>
             </Grid>
-            <Grid item size={8} visibility={restrict ? 'hidden' : 'visible' }>
-              <Grid container spacing={2}>
 
+            <Grid item size={8} display={restrict ? 'none' : 'block' }>
+              <Grid container spacing={2}>
+                <Grid item size={6} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <Typography variant="h6" color='olive'>Duration (in minutes):</Typography>
+                  <TextField 
+                    type='number'
+                    value={duration}
+                    onChange={(e) => setDuration(Math.max(0, e.target.value))}
+                    sx={{ width: '150px' }}
+                  >
+                  </TextField>
+                </Grid>
+                <Grid item size={6} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <Typography variant="h6" color='olive'>Max split:</Typography>
+                  <TextField 
+                    type='number'
+                    value={maxSplits}
+                    onChange={(e) => setMaxSplits(Math.max(1, e.target.value))}
+                    sx={{ width: '100px' }}
+                  >
+                  </TextField>
+                </Grid>
               </Grid>
             </Grid>
             {/* END LINE 3 */}

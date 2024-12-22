@@ -38,18 +38,21 @@ pub fn establish_db_connection() -> SqliteConnection {
         .unwrap_or_else(|_| panic!("Error connecting to {}", db_path))
 }
 
-#[derive(Queryable, Insertable, AsChangeset, serde::Deserialize, serde::Serialize)]
+#[derive(Queryable, Insertable, AsChangeset, Selectable, serde::Deserialize, serde::Serialize)]
 #[diesel(table_name = tasks)]
 pub struct Task {
     pub id: Option<i32>,
     pub task_title: String,
     pub task_group: Option<String>,
+    pub have_deadline: Option<bool>,
     pub deadline_date: Option<String>,
     pub deadline_time: Option<String>,
     pub task_date: Option<String>,
     pub from_time: Option<String>,
     pub to_time: Option<String>,
     pub restrict: Option<bool>,
+    pub duration: Option<i32>,
+    pub max_splits: Option<i32>,
     pub task_description: Option<String>,
 }
 
@@ -71,8 +74,8 @@ pub fn get_task_list(date: &str) -> Vec<Task> {
     use crate::schema::tasks::dsl::*;
 
     let mut connection = establish_db_connection();
-    tasks
-        .filter(task_date.eq(date))
+    tasks.select(Task::as_select())
+        .filter(task_date.eq(date).and(restrict.eq(true)))
         .load::<Task>(&mut connection)
         .expect("Error loading tasks")
 }
