@@ -22,7 +22,7 @@ import Grid from '@mui/material/Grid2';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { TimeField } from '@mui/x-date-pickers/TimeField';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 
 // Tauri API
 import { invoke } from '@tauri-apps/api/core';
@@ -52,7 +52,7 @@ const CLDTimeRange = ({fromValue, setFromValue, toValue, setToValue}) => {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <TimeField
+        <TimePicker
           label="From"
           value={fromValue}
           onChange={(newValue) => setFromValue(newValue)}
@@ -60,7 +60,7 @@ const CLDTimeRange = ({fromValue, setFromValue, toValue, setToValue}) => {
 
         <Typography variant="h6" sx={{ marginX: 0.5 }}>—</Typography>
 
-        <TimeField
+        <TimePicker
           label="To"
           value={toValue}
           onChange={(newValue) => setToValue(newValue)}
@@ -199,7 +199,7 @@ const TaskModal = ({ isOpen, handleClose }) => {
 
             <Grid item size={3} style={{ display: 'flex', alignItems: 'center' }}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <TimeField label="Deadline time" value={deadlineTime} onChange={(newValue) => setDeadlineTime(newValue)} />
+                <TimePicker label="Deadline time" value={deadlineTime} onChange={(newValue) => setDeadlineTime(newValue)} />
               </LocalizationProvider>
             </Grid>
 
@@ -229,7 +229,7 @@ const TaskModal = ({ isOpen, handleClose }) => {
               />
             </Grid>
             
-            <Grid item size={8}>
+            <Grid item size={8} visibility={restrict ? 'visible' : 'hidden' }>
               <Grid container spacing={2}>
                 <Grid item size={3}>
                   <CLDDatePicker title="Task date" value={taskDate} setValue={setTaskDate} />
@@ -237,6 +237,11 @@ const TaskModal = ({ isOpen, handleClose }) => {
                 <Grid item size={9}>
                   <CLDTimeRange fromValue={fromTime} setFromValue={setFromTime} toValue={toTime} setToValue={setToTime} />
                 </Grid>
+              </Grid>
+            </Grid>
+            <Grid item size={8} visibility={restrict ? 'hidden' : 'visible' }>
+              <Grid container spacing={2}>
+
               </Grid>
             </Grid>
             {/* END LINE 3 */}
