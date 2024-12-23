@@ -46,8 +46,8 @@ function App() {
       <Box sx={{ display: 'flex' }}>
         {/* AppBar */}
         <AppBar 
-          isSidebarOpen={isSidebarOpen} 
-          openSidebar={() => setIsSidebarOpen(true)}
+          isSidebarOpen={isSidebarOpen}
+          setSidebarOpen={() => setIsSidebarOpen(!isSidebarOpen)}
           openTaskModal={() => setIsTaskModalOpen(true)}
           setTaskViewBegin={setDateViewBegin}
         />

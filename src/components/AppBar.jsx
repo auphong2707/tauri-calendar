@@ -37,7 +37,7 @@ const StyledAppBar = styled(MuiAppBar, {
   ],
 }));
 
-export default function AppBar({ isSidebarOpen, openSidebar, openTaskModal, setTaskViewBegin }) {
+export default function AppBar({ isSidebarOpen, setSidebarOpen, openTaskModal, setTaskViewBegin }) {
   const theme = useTheme();
   
   return (
@@ -46,13 +46,12 @@ export default function AppBar({ isSidebarOpen, openSidebar, openTaskModal, setT
           <IconButton
             color="inherit"
             aria-label="open drawer"
-            onClick={openSidebar}
+            onClick={() => setSidebarOpen(!isSidebarOpen)}
             edge="start"
             sx={[
               {
                 mr: 2,
               },
-              isSidebarOpen && { display: 'none' },
             ]}
           >
             <ViewSidebarIcon />
@@ -95,7 +94,7 @@ export default function AppBar({ isSidebarOpen, openSidebar, openTaskModal, setT
 
 AppBar.propTypes = {
   isSidebarOpen: PropTypes.bool.isRequired,
-  openSidebar: PropTypes.func.isRequired,
+  setSidebarOpen: PropTypes.func.isRequired,
   openTaskModal: PropTypes.func.isRequired,
   setTaskViewBegin: PropTypes.func.isRequired,
 }

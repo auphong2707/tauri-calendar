@@ -5,10 +5,8 @@ import { FEATURE_CONSTANT } from '../constant';
 import PropTypes from 'prop-types';
 
 // Import Material UI components
-import { Divider, Drawer, IconButton } from '@mui/material';
+import { Divider, Drawer } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 // Import custom components
 import BasicDateCalendar from './BasicDateCalendar';
@@ -17,14 +15,17 @@ import DigitalClock from './DigitalClock';
 const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
+  justifyContent: 'center',
   padding: theme.spacing(0, 1),
   // necessary for content to be below app bar
   ...theme.mixins.toolbar,
   paddingLeft: '15px',
   height: FEATURE_CONSTANT.BAR_HEIGHT,
+  backgroundColor: theme.palette.primary.main,
+  boxShadow: '0px 4px 0px 3 rgba(0, 0, 0, 0.7)',
 }));
 
-export default function PersistentDrawer({ isSidebarOpen, closeSidebar, dayViewBegin, setDayViewBegin }) {
+export default function PersistentDrawer({ isSidebarOpen, dayViewBegin, setDayViewBegin }) {
   const theme = useTheme();
 
   return (
@@ -39,6 +40,7 @@ export default function PersistentDrawer({ isSidebarOpen, closeSidebar, dayViewB
           display: 'flex',
           flexDirection: 'column',
           backgroundColor: theme.palette.primary.light,
+          borderRight: '2px solid ' + theme.palette.primary.dark,
         }
       }}
       variant="persistent"
@@ -47,9 +49,6 @@ export default function PersistentDrawer({ isSidebarOpen, closeSidebar, dayViewB
     >
       <DrawerHeader>
         <DigitalClock />
-        <IconButton onClick={closeSidebar} sx={{ marginLeft: 'auto' }}>
-          {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-        </IconButton>
       </DrawerHeader>
 
       {/* Upper Section */}
@@ -64,7 +63,6 @@ export default function PersistentDrawer({ isSidebarOpen, closeSidebar, dayViewB
 
 PersistentDrawer.propTypes = {
   isSidebarOpen: PropTypes.bool.isRequired,
-  closeSidebar: PropTypes.func.isRequired,
   dayViewBegin: PropTypes.object.isRequired,
   setDayViewBegin: PropTypes.func.isRequired
 };

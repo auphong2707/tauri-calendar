@@ -20,6 +20,7 @@ export default function BasicDateCalendar({ dayViewBegin, setDayViewBegin }) {
         fixedWeekNumber={6}
         sx={{
           backgroundColor: theme.palette.background.paper,
+          color: theme.palette.primary.main,
           borderRadius: '10px',
         }}
         timezone="system"
