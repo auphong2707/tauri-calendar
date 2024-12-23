@@ -36,6 +36,8 @@ const CLDDatePicker = ({title, value, setValue}) => {
         label={title}
         value={value}
         onChange={(newValue) => setValue(newValue)}
+        format="DD/MM/YYYY"
+        views={['day', 'month', 'year']}
         fullWidth
       />
     </LocalizationProvider>

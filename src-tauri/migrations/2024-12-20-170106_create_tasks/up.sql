@@ -14,3 +14,13 @@ CREATE TABLE tasks (
     max_splits INTEGER,        -- Maximum number of splits allowed
     task_description TEXT
 );
+
+CREATE TABLE active_tasks (
+    id INTEGER PRIMARY KEY REFERENCES tasks(id),
+    task_title TEXT NOT NULL,
+    task_description TEXT,
+    task_date TEXT,            -- ISO-8601 format
+    from_time TEXT,            -- HH:MM (start time)
+    duration INTEGER,          -- In minutes
+    task_status TEXT           -- "active" or "ended"
+);

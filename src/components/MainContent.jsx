@@ -123,10 +123,11 @@ const DayColumn = ({ day, index }) => {
       {taskList.map(task => {
         // Calculate start and end positions
         const fromTimeMinutes = dayjs(task.from_time, "HH:mm").hour() * 60 + dayjs(task.from_time, "HH:mm").minute();
-        const toTimeMinutes = dayjs(task.to_time, "HH:mm").hour() * 60 + dayjs(task.to_time, "HH:mm").minute();
+
+        console.log(task);
 
         const startPosition = (fromTimeMinutes / 1440) * 100; // Start position as a percentage
-        const height = ((toTimeMinutes - fromTimeMinutes) / 1440) * 100; // Height as a percentage
+        const height = (task.duration / 1440) * 100; // Height as a percentage
 
         return (
           <Box 
