@@ -1,3 +1,5 @@
+use core::{num, time};
+
 use chrono::{NaiveDate, NaiveTime, Duration};
 use crate::db::{Task, ActiveTask};
 
@@ -16,7 +18,7 @@ struct TimeSpace {
 }
 
 fn is_ok_to_add_task(free_time_vec: &mut Vec<TimeSpace>, task_duration: i32, num_split: i32) -> bool {
-    free_time_vec.sort_by(|a, b| b.duration.cmp(&a.duration).reverse());
+    free_time_vec.sort_by(|a, b| b.duration.cmp(&a.duration));
     let time_base = task_duration / (num_split + 1);
 
     let mut sum_duration = 0;
@@ -25,12 +27,17 @@ fn is_ok_to_add_task(free_time_vec: &mut Vec<TimeSpace>, task_duration: i32, num
         return false;
     }
 
+    println!("Pass check 1");
+    println!("Free time vec: {:?}", free_time_vec);
+
     for index in 0..num_split as usize {
         sum_duration += free_time_vec[index].duration;
         if free_time_vec[index].duration < time_base {
             return false;
         }
     }
+
+    println!("Pass check 2");
 
     sum_duration >= task_duration
 }
@@ -46,13 +53,13 @@ fn arrange_free_time(from_date: NaiveDate,
     let mut free_time_vec: Vec<TimeSpace> = Vec::new();
     let mut current_index = 0;
     let mut mut_date = from_date;
+    let mut time_array: Vec<TimeSpace> = Vec::new();
 
     while !is_ok_to_add_task(&mut free_time_vec, task_duration, num_split) {
-        let mut time_array: Vec<TimeSpace> = Vec::new();
+        time_array.clear();
         let mut new_index = current_index;
 
         for index in current_index..arranged_tasks.len() {
-            new_index = index;
             let task_date = NaiveDate::parse_from_str(
                 arranged_tasks[index].task_date.as_ref().unwrap(),
                 "%Y-%m-%d",
@@ -76,6 +83,7 @@ fn arrange_free_time(from_date: NaiveDate,
             };
     
             time_array.push(time_space);
+            new_index = index + 1;
         }
         
         current_index = new_index;
@@ -89,7 +97,7 @@ fn arrange_free_time(from_date: NaiveDate,
         println!("Time array: {:?}", time_array);
 
         let mut start_time_pointer = NaiveTime::from_hms_opt(0, 0, 0).expect("Invalid time");
-        for time_space in time_array {
+        for time_space in &time_array {
             let free_time_duration: i32 = time_space.start_time.signed_duration_since(start_time_pointer).num_minutes() as i32;
 
             if free_time_duration > 0 {
@@ -104,11 +112,18 @@ fn arrange_free_time(from_date: NaiveDate,
 
             start_time_pointer = time_space.start_time + Duration::minutes(time_space.duration as i64);
         }
+        
+        println!("Free time vec: {:?}", free_time_vec);
 
         mut_date = mut_date + Duration::days(1);
+        println!("Check is ok to add task: {:?}", is_ok_to_add_task(&mut free_time_vec, task_duration, num_split));
     }
 
-    (free_time_vec, mut_date - Duration::days(1))
+    free_time_vec.truncate(num_split as usize);
+    free_time_vec.reverse();
+    mut_date = mut_date - Duration::days(1);
+
+    (free_time_vec, mut_date)
 }
 
 pub fn get_arranged_tasks(tasks: Vec<Task>, from_date: NaiveDate) -> Vec<ActiveTask> {
@@ -174,7 +189,8 @@ pub fn get_arranged_tasks(tasks: Vec<Task>, from_date: NaiveDate) -> Vec<ActiveT
         let time_base = task.duration.unwrap() / (num_split + 1);
         let mut time_left = task.duration.unwrap() - time_base * num_split;
 
-        for index in (0..num_split as usize).rev() {
+        for index in 0..num_split as usize {
+            println!("Start arranging task in free time with index: {}", index);
             if (task.duration.unwrap() / (num_split + 1)) + time_left 
                     >= current_free_time_vec[index].duration 
             {
