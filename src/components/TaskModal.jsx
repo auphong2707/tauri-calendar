@@ -59,6 +59,7 @@ const CLDTimeRange = ({fromValue, setFromValue, toValue, setToValue}) => {
           label="From"
           value={fromValue}
           onChange={(newValue) => setFromValue(newValue)}
+          ampm={false}
         />
 
         <Typography variant="h6" sx={{ marginX: 0.5 }}>—</Typography>
@@ -67,6 +68,7 @@ const CLDTimeRange = ({fromValue, setFromValue, toValue, setToValue}) => {
           label="To"
           value={toValue}
           onChange={(newValue) => setToValue(newValue)}
+          ampm={false}
         />
       </LocalizationProvider>
     </Box>
@@ -208,7 +210,7 @@ const TaskModal = ({ isOpen, handleClose }) => {
 
                 <Grid item size={4} style={{ display: 'flex', alignItems: 'center' }}>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <TimePicker label="Deadline time" value={deadlineTime} onChange={(newValue) => setDeadlineTime(newValue)} />
+                    <TimePicker label="Deadline time" value={deadlineTime} onChange={(newValue) => setDeadlineTime(newValue)} ampm={false} />
                   </LocalizationProvider>
                 </Grid>
                 <Grid item size={4}></Grid>

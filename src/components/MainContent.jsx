@@ -62,12 +62,12 @@ const DayColumn = ({ day, index }) => {
     <Box 
       sx={{ 
         borderLeft: (index !== 0 ? 2 : 0),
+        borderBottom: 2,
         borderColor: 'white',
         height: '10%', 
         textAlign: 'center',
         alignContent: 'center',
         backgroundColor: theme.palette.primary.main,
-        zIndex: 0,
       }}
     >
       <Typography variant="h6" color='white'>{dayName}</Typography>
@@ -99,7 +99,6 @@ const DayColumn = ({ day, index }) => {
             flexGrow: 1,
             backgroundColor: theme.palette.primary.light,
             borderBottom: 2,
-            borderTop: (rowIndex === 0 ? 2 : 0),
             borderColor: 'white',
           }}
         >
@@ -142,6 +141,7 @@ const DayColumn = ({ day, index }) => {
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
+              borderBottom: '1px solid white',
             }}
           >
             <Typography variant="body1" color='white'>{task.task_title}</Typography>

@@ -1,10 +1,12 @@
 mod db;
 mod schema;
+mod algo;
 
 use db::{create_task, delete_task, get_task_list, update_task};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+  println!("App is running!");
   tauri::Builder::default()
     .setup(|app| {
       if cfg!(debug_assertions) {

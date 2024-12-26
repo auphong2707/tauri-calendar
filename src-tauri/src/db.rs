@@ -1,13 +1,14 @@
 use std::fs;
 use std::path::Path;
 use dirs_next::home_dir;
-use chrono::NaiveTime;
 
 use diesel::prelude::*;
 use diesel::sqlite::SqliteConnection;
 
 use crate::schema::tasks;
 use crate::schema::active_tasks;
+use crate::algo::get_arranged_tasks;
+use chrono::Duration;
 
 const DB_PATH: &str = "/.config/orion/database/sqlite";
 
@@ -45,7 +46,7 @@ pub fn establish_db_connection() -> SqliteConnection {
 
 
 // [TABLE STRUCTURE]
-#[derive(Queryable, Insertable, AsChangeset, Selectable, Clone, serde::Deserialize, serde::Serialize)]
+#[derive(Queryable, Insertable, AsChangeset, Clone, serde::Deserialize, serde::Serialize, Selectable, Debug)]
 #[diesel(table_name = tasks)]
 pub struct Task {
     pub id: Option<i32>,
@@ -63,7 +64,7 @@ pub struct Task {
     pub task_description: Option<String>,
 }
 
-#[derive(Queryable, Insertable, AsChangeset, Selectable, serde::Deserialize, serde::Serialize)]
+#[derive(Queryable, Insertable, AsChangeset, Selectable, serde::Deserialize, serde::Serialize, Debug)]
 #[diesel(table_name = active_tasks)]
 pub struct ActiveTask {
     pub id: Option<i32>,
@@ -88,33 +89,32 @@ pub fn create_task(task: Task) -> String {
         .map(|_| "Task created successfully".to_string())
         .unwrap_or_else(|err| format!("Error creating task: {}", err));
 
-    if task.restrict.unwrap() {
-        let cloned_task = task.clone();
-        
-        let cal_from_time = NaiveTime::parse_from_str(&task.from_time.unwrap(), "%H:%M").unwrap();
-        let cal_to_time = NaiveTime::parse_from_str(&task.to_time.unwrap(), "%H:%M").unwrap();
-        let cal_duration = (cal_to_time - cal_from_time).num_minutes() as i32;
+    // Calculate tomorrow's date
+    let tomorrow = chrono::Local::now().naive_local().date() + Duration::days(1);
+    let tomorrow_str = tomorrow.to_string();
 
-        
-        let active_task = ActiveTask {
-            id: cloned_task.id,
-            task_title: cloned_task.task_title,
-            task_date: cloned_task.task_date,
-            from_time: cloned_task.from_time,
-            duration: Some(cal_duration),
-            task_status: Some("Pending".to_string()),
-            task_description: task.task_description,
-        };
+    // Fetch tasks with a date >= tomorrow
+    let tasks: Vec<Task> = tasks::table
+                        .filter(tasks::task_date.ge(tomorrow_str).or(tasks::restrict.eq(false)))
+                        .select(Task::as_select())
+                        .load::<Task>(&mut connection)
+                        .expect("Error loading tasks");
 
-        diesel::insert_into(active_tasks::table)
-            .values(&active_task)
-            .execute(&mut connection)
-            .map(|_| "Active task created successfully".to_string())
-            .unwrap_or_else(|err| format!("Error creating active task: {}", err))
-    }
-    else {
-        "This case is not implemented yet".to_string()
-    }
+    // Arrange the tasks
+    let arranged_tasks = get_arranged_tasks(tasks, tomorrow);
+
+    // Clear the active_tasks table
+    diesel::delete(active_tasks::table)
+        .execute(&mut connection)
+        .expect("Error clearing active_tasks table");
+
+    // Insert the arranged tasks into the active_tasks table
+    diesel::insert_into(active_tasks::table)
+        .values(&arranged_tasks)
+        .execute(&mut connection)
+        .expect("Error inserting arranged tasks into active_tasks table");
+
+    "Task created successfully".to_string()
 }
 
 #[tauri::command]
