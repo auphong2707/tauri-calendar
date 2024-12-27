@@ -214,8 +214,10 @@ pub fn get_arranged_tasks(tasks: Vec<Task>, from_date: NaiveDate) -> Vec<ActiveT
                 active_tasks.push(active_task);
             } else {
                 let time_left_for_each_task = time_left / (index as i32 + 1);
-                for index_2 in (0..index + 1).rev() {
-                    if index_2 > 0 {
+                println!("index + 1: {}, num_split: {}", index, num_split);
+                for index_2 in (index..num_split as usize).rev() {
+                    println!("Start arranging task in free time with index: {}", index_2);
+                    if index_2 < num_split as usize - 1 {
                         let active_task = ActiveTask {
                             active_task_id: None,
                             ref_task_id: task.task_id.clone().unwrap(),
@@ -252,8 +254,6 @@ pub fn get_arranged_tasks(tasks: Vec<Task>, from_date: NaiveDate) -> Vec<ActiveT
                     }
                 }
             }
-
-            break;
         }
     }
 
