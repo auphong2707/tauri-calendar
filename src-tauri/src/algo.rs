@@ -59,7 +59,7 @@ fn arrange_free_time(from_date: NaiveDate,
 
         for index in current_index..arranged_tasks.len() {
             let task_date = NaiveDate::parse_from_str(
-                arranged_tasks[index].task_date.as_ref().unwrap(),
+                &arranged_tasks[index].task_date,
                 "%Y-%m-%d",
             )
             .unwrap();
@@ -68,12 +68,12 @@ fn arrange_free_time(from_date: NaiveDate,
                 break;
             }
     
-            let duration = arranged_tasks[index].duration.unwrap();
+            let duration = arranged_tasks[index].duration.clone();
     
             let time_space = TimeSpace {
                 date: task_date,
                 start_time: NaiveTime::parse_from_str(
-                    arranged_tasks[index].from_time.as_ref().unwrap(),
+                    &arranged_tasks[index].from_time,
                     "%H:%M",
                 )
                 .unwrap(),
@@ -133,14 +133,15 @@ pub fn get_arranged_tasks(tasks: Vec<Task>, from_date: NaiveDate) -> Vec<ActiveT
     println!("Start filtering tasks\n");
 
     for task in tasks {
-        if task.restrict.unwrap_or(false) {
+        if task.restrict {
             let active_task = ActiveTask {
-                id: task.id.clone(),
+                active_task_id: None,
+                ref_task_id: task.task_id.clone().unwrap(),
                 task_title: task.task_title.clone(),
                 task_date: task.task_date.clone(),
                 from_time: task.from_time.clone(),
-                duration: Some(calculate_duration(&task.from_time.unwrap(), &task.to_time.unwrap())),
-                task_status: Some("Pending".to_string()),
+                duration: calculate_duration(&task.from_time, &task.to_time),
+                task_status: "Pending".to_string(),
                 task_description: task.task_description.clone(),
             };
             
@@ -151,7 +152,7 @@ pub fn get_arranged_tasks(tasks: Vec<Task>, from_date: NaiveDate) -> Vec<ActiveT
     }
 
     automatic_tasks.sort_by(|a, b| {
-        match (a.have_deadline.unwrap(), b.have_deadline.unwrap()) {
+        match (a.have_deadline.clone(), b.have_deadline.clone()) {
             (true, true) => a.deadline_date.cmp(&b.deadline_date),
             (false, true) => std::cmp::Ordering::Greater,
             (true, false) => std::cmp::Ordering::Less,
@@ -165,13 +166,13 @@ pub fn get_arranged_tasks(tasks: Vec<Task>, from_date: NaiveDate) -> Vec<ActiveT
         let mut current_finish_date: Option<NaiveDate> = None;
         let mut current_free_time_vec: Vec<TimeSpace> = Vec::new();
         
-        for num_split in 1..(task.max_splits.unwrap_or(1) + 1) {
+        for num_split in 1..(task.max_splits.clone() + 1) {
             println!("Try arranging task: {} with num_split: {}", task.task_title, num_split);
 
             let (free_time_vec, finish_date) = arrange_free_time(
                 from_date, 
                 &active_tasks, 
-                task.duration.unwrap(), 
+                task.duration.clone(), 
                 num_split);
 
             if current_finish_date.is_none() || finish_date < current_finish_date.unwrap() {
@@ -184,30 +185,29 @@ pub fn get_arranged_tasks(tasks: Vec<Task>, from_date: NaiveDate) -> Vec<ActiveT
         println!("Current free time vec: {:?}", current_free_time_vec);
 
         let num_split = current_free_time_vec.len() as i32;
-        let time_base = task.duration.unwrap() / (num_split + 1);
-        let mut time_left = task.duration.unwrap() - time_base * num_split;
+        let time_base = task.duration.clone() / (num_split + 1);
+        let mut time_left = task.duration.clone() - time_base * num_split;
 
         for index in 0..num_split as usize {
             println!("Start arranging task in free time with index: {}", index);
-            if (task.duration.unwrap() / (num_split + 1)) + time_left 
+            if (task.duration.clone() / (num_split + 1)) + time_left 
                     >= current_free_time_vec[index].duration 
             {
-                time_left = (task.duration.unwrap() / (num_split + 1)) 
+                time_left = (task.duration.clone() / (num_split + 1)) 
                             + time_left 
                             - current_free_time_vec[index].duration;
 
                 let active_task = ActiveTask {
-                    id: task.id.clone(),
+                    active_task_id: None,
+                    ref_task_id: task.task_id.clone().unwrap(),
                     task_title: task.task_title.clone(),
-                    task_date: Some(current_free_time_vec[index].date.to_string()),
-                    from_time: Some(
-                        current_free_time_vec[index]
-                            .start_time
-                            .format("%H:%M")
-                            .to_string(),
-                    ),
-                    duration: Some(current_free_time_vec[index].duration),
-                    task_status: Some("Pending".to_string()),
+                    task_date: current_free_time_vec[index].date.clone().to_string(),
+                    from_time: current_free_time_vec[index].clone()
+                                .start_time
+                                .format("%H:%M")
+                                .to_string(),
+                    duration: current_free_time_vec[index].duration.clone(),
+                    task_status: "Pending".to_string(),
                     task_description: task.task_description.clone(),
                 };
 
@@ -217,17 +217,16 @@ pub fn get_arranged_tasks(tasks: Vec<Task>, from_date: NaiveDate) -> Vec<ActiveT
                 for index_2 in (0..index + 1).rev() {
                     if index_2 > 0 {
                         let active_task = ActiveTask {
-                            id: task.id.clone(),
+                            active_task_id: None,
+                            ref_task_id: task.task_id.clone().unwrap(),
                             task_title: task.task_title.clone(),
-                            task_date: Some(current_free_time_vec[index_2].date.to_string()),
-                            from_time: Some(
-                                current_free_time_vec[index_2]
-                                    .start_time
-                                    .format("%H:%M")
-                                    .to_string(),
-                            ),
-                            duration: Some(time_base + time_left_for_each_task),
-                            task_status: Some("Pending".to_string()),
+                            task_date: current_free_time_vec[index_2].date.clone().to_string(),
+                            from_time: current_free_time_vec[index_2].clone()
+                                        .start_time
+                                        .format("%H:%M")
+                                        .to_string(),
+                            duration: time_base + time_left_for_each_task,
+                            task_status: "Pending".to_string(),
                             task_description: task.task_description.clone(),
                         };
 
@@ -236,17 +235,16 @@ pub fn get_arranged_tasks(tasks: Vec<Task>, from_date: NaiveDate) -> Vec<ActiveT
                         active_tasks.push(active_task);
                     } else {
                         let active_task = ActiveTask {
-                            id: task.id.clone(),
+                            active_task_id: None,
+                            ref_task_id: task.task_id.clone().unwrap(),
                             task_title: task.task_title.clone(),
-                            task_date: Some(current_free_time_vec[index_2].date.to_string()),
-                            from_time: Some(
-                                current_free_time_vec[index_2]
-                                    .start_time
-                                    .format("%H:%M")
-                                    .to_string(),
-                            ),
-                            duration: Some(time_base + time_left),
-                            task_status: Some("Pending".to_string()),
+                            task_date: current_free_time_vec[index_2].date.clone().to_string(),
+                            from_time: current_free_time_vec[index_2].clone()
+                                        .start_time
+                                        .format("%H:%M")
+                                        .to_string(),
+                            duration: time_base + time_left,
+                            task_status: "Pending".to_string(),
                             task_description: task.task_description.clone(),
                         };
 

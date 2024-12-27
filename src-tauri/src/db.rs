@@ -49,31 +49,32 @@ pub fn establish_db_connection() -> SqliteConnection {
 #[derive(Queryable, Insertable, AsChangeset, Clone, serde::Deserialize, serde::Serialize, Selectable, Debug)]
 #[diesel(table_name = tasks)]
 pub struct Task {
-    pub id: Option<i32>,
+    pub task_id: Option<i32>,
     pub task_title: String,
-    pub task_group: Option<String>,
-    pub have_deadline: Option<bool>,
-    pub deadline_date: Option<String>,
-    pub deadline_time: Option<String>,
-    pub task_date: Option<String>,
-    pub from_time: Option<String>,
-    pub to_time: Option<String>,
-    pub restrict: Option<bool>,
-    pub duration: Option<i32>,
-    pub max_splits: Option<i32>,
-    pub task_description: Option<String>,
+    pub task_group: String,
+    pub have_deadline: bool,
+    pub deadline_date: String,
+    pub deadline_time: String,
+    pub task_date: String,
+    pub from_time: String,
+    pub to_time: String,
+    pub restrict: bool,
+    pub duration: i32,
+    pub max_splits: i32,
+    pub task_description: String,
 }
 
 #[derive(Queryable, Insertable, AsChangeset, Selectable, serde::Deserialize, serde::Serialize, Debug)]
 #[diesel(table_name = active_tasks)]
 pub struct ActiveTask {
-    pub id: Option<i32>,
-    pub task_title : String,
-    pub task_description: Option<String>,
-    pub task_date: Option<String>,
-    pub from_time: Option<String>,
-    pub duration: Option<i32>,
-    pub task_status: Option<String>,
+    pub active_task_id: Option<i32>,
+    pub ref_task_id: i32,
+    pub task_title: String,
+    pub task_description: String,
+    pub task_date: String,
+    pub from_time: String,
+    pub duration: i32,
+    pub task_status: String,
 }
 // [END TABLE STRUCTURE]
 
@@ -120,26 +121,12 @@ pub fn create_task(task: Task) -> String {
 #[tauri::command]
 pub fn get_task_list(date: &str) -> Vec<ActiveTask> {
     let mut connection = establish_db_connection();
-    active_tasks::table
+    let active_tasks: Vec<ActiveTask> = active_tasks::table
         .filter(active_tasks::task_date.eq(date))
-        .inner_join(tasks::table.on(tasks::id.eq(active_tasks::id)))
-        .select((active_tasks::all_columns, tasks::task_title))
-        
-        .load::<(ActiveTask, String)>(&mut connection)
-        .expect("Error loading tasks")
-        .into_iter()
-        .map(|(active_task, task_title)| {
-            ActiveTask {
-                id: active_task.id,
-                task_title,
-                task_description: active_task.task_description,
-                task_date: active_task.task_date,
-                from_time: active_task.from_time,
-                duration: active_task.duration,
-                task_status: active_task.task_status,
-            }
-        })
-        .collect()
+        .load::<ActiveTask>(&mut connection)
+        .expect("Error loading active tasks");
+
+    active_tasks
 }
 
 #[tauri::command]
@@ -147,7 +134,7 @@ pub fn update_task(updated_task: Task) -> String {
     use crate::schema::tasks::dsl::*;
 
     let mut connection = establish_db_connection();
-    diesel::update(tasks.filter(id.eq(updated_task.id)))
+    diesel::update(tasks.filter(task_id.eq(updated_task.task_id)))
         .set(&updated_task)
         .execute(&mut connection)
         .map(|_| "Task updated successfully".to_string())
@@ -155,11 +142,11 @@ pub fn update_task(updated_task: Task) -> String {
 }
 
 #[tauri::command]
-pub fn delete_task(task_id: i32) -> String {
+pub fn delete_task(delete_task_id: i32) -> String {
     use crate::schema::tasks::dsl::*;
 
     let mut connection = establish_db_connection();
-    diesel::delete(tasks.filter(id.eq(task_id)))
+    diesel::delete(tasks.filter(task_id.eq(delete_task_id)))
         .execute(&mut connection)
         .map(|_| "Task deleted successfully".to_string())
         .unwrap_or_else(|err| format!("Failed to delete task: {}", err))
