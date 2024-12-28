@@ -13,7 +13,7 @@ import dayjs from 'dayjs'
 function App() {
   {/* State */}
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+  const [taskModalState, setTaskModalState] = useState('closed');
   const [dateViewBegin, setDateViewBegin] = useState(dayjs());
 
   return (
@@ -40,7 +40,7 @@ function App() {
       <CssBaseLine />
 
       {/* Task Modal */}
-      <TaskModal isOpen={isTaskModalOpen} handleClose={() => setIsTaskModalOpen(false)} />
+      <TaskModal taskModalState={taskModalState} handleClose={() => setTaskModalState('closed')} />
 
       {/* Main Container */}
       <Box sx={{ display: 'flex' }}>
@@ -48,7 +48,7 @@ function App() {
         <AppBar 
           isSidebarOpen={isSidebarOpen}
           setSidebarOpen={() => setIsSidebarOpen(!isSidebarOpen)}
-          openTaskModal={() => setIsTaskModalOpen(true)}
+          openTaskModal={() => setTaskModalState('create')}
           setTaskViewBegin={setDateViewBegin}
         />
 

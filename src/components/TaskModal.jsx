@@ -85,7 +85,7 @@ CLDTimeRange.propTypes = {
 
 
 // TaskModal component
-const TaskModal = ({ isOpen, handleClose }) => {
+const TaskModal = ({ taskModalState, handleClose }) => {
   const theme = useTheme();
   // Set states
   const [taskTitle, setTaskTitle] = useState('');
@@ -131,7 +131,7 @@ const TaskModal = ({ isOpen, handleClose }) => {
 
   return (
     <Dialog
-      open={isOpen}
+      open={taskModalState !== 'closed'}
       onClose={handleClose}
       aria-labelledby="mini-modal-title"
       aria-describedby="mini-modal-description"
@@ -302,7 +302,15 @@ const TaskModal = ({ isOpen, handleClose }) => {
       </DialogContent>
 
       <DialogActions style={{ justifyContent: 'space-between', padding: '0px 25px 20px 25px' }}>
-        <Button onClick={handleClose} sx={{ color: 'white', backgroundColor: theme.palette.primary.main, padding: '10px 20px 10px 20px' }}>
+        <Button 
+          onClick={handleClose} 
+          sx={{ 
+            color: 'white', 
+            backgroundColor: theme.palette.primary.main, 
+            padding: '10px 20px 10px 20px',
+            visibility: taskModalState === 'create' ? 'hidden' : 'visible'
+          }}
+        >
           Delete
         </Button>
         <div style={{ display: 'flex', gap: '20px' }}>
@@ -321,6 +329,6 @@ const TaskModal = ({ isOpen, handleClose }) => {
 export default TaskModal;
 
 TaskModal.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
+  taskModalState: PropTypes.string.isRequired,
   handleClose: PropTypes.func.isRequired
 };
