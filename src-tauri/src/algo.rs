@@ -90,7 +90,6 @@ fn arrange_free_time(from_date: NaiveDate,
             start_time: NaiveTime::from_hms_opt(23, 59, 59).expect("Invalid time"),
             duration: 0,
         });
-        time_array.sort_by(|a, b| a.start_time.cmp(&b.start_time));
 
         println!("Time array: {:?}", time_array);
 
@@ -165,6 +164,15 @@ pub fn get_arranged_tasks(tasks: Vec<Task>, from_date: NaiveDate) -> Vec<ActiveT
     for task in automatic_tasks {
         let mut current_finish_date: Option<NaiveDate> = None;
         let mut current_free_time_vec: Vec<TimeSpace> = Vec::new();
+
+        active_tasks.sort_by(|a, b| {
+            let date_cmp = a.task_date.cmp(&b.task_date);
+            if date_cmp == std::cmp::Ordering::Equal {
+                a.from_time.cmp(&b.from_time)
+            } else {
+                date_cmp
+            }
+        });
         
         for num_split in 1..(task.max_splits.clone() + 1) {
             println!("Try arranging task: {} with num_split: {}", task.task_title, num_split);
