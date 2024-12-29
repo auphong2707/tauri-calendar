@@ -155,7 +155,12 @@ pub fn update_task(updated_task: Task) -> String {
         .set(&updated_task)
         .execute(&mut connection)
         .map(|_| "Task updated successfully".to_string())
-        .unwrap_or_else(|err| format!("Failed to update task: {}", err))
+        .unwrap_or_else(|err| format!("Failed to update task: {}", err));
+
+    // Rearrange the tasks
+    rearrange_tasks(connection);
+
+    "Task updated successfully".to_string()
 }
 
 #[tauri::command]

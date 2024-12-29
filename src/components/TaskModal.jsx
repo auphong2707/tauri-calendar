@@ -199,6 +199,32 @@ const TaskModal = ({ selectedTaskID, handleClose }) => {
     } catch (error) {
       console.error('Error deleting task:', error);
     }
+  };
+
+  const handleUpdate = async () => {
+    const taskData = {
+      task_id: selectedTaskID,
+      task_title: taskTitle,
+      task_group: taskGroup,
+      have_deadline: haveDeadline,
+      deadline_date: deadlineDate.format('YYYY-MM-DD'),
+      deadline_time: deadlineTime.format('HH:mm'),
+      restrict: restrict,
+      task_date: taskDate.format('YYYY-MM-DD'),
+      from_time: fromTime.format('HH:mm'),
+      to_time: toTime.format('HH:mm'),
+      duration: duration,
+      max_splits: maxSplits,
+      task_description: taskDescription,
+    };
+
+    try {
+      const response = await invoke('update_task', { updatedTask: taskData });
+      handleClose();
+      console.log(response);
+    } catch (error) {
+      console.error('Error modifying task:', error);
+    }
   }
 
   return (
@@ -390,7 +416,7 @@ const TaskModal = ({ selectedTaskID, handleClose }) => {
           <Button onClick={handleClose} sx={{ color: 'white', backgroundColor: theme.palette.primary.main, padding: '10px 20px 10px 20px' }}>
             Cancel
           </Button>
-          <Button type="submit" onClick={ selectedTaskID === -1 ? handleSubmit : null} sx={{ color: 'white', backgroundColor: theme.palette.primary.main, padding: '10px 20px 10px 20px' }}>
+          <Button type="submit" onClick={ selectedTaskID === -1 ? handleSubmit : handleUpdate} sx={{ color: 'white', backgroundColor: theme.palette.primary.main, padding: '10px 20px 10px 20px' }}>
             Accept
           </Button>
         </div>
