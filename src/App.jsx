@@ -12,8 +12,8 @@ import dayjs from 'dayjs'
 
 function App() {
   {/* State */}
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [taskModalState, setTaskModalState] = useState('closed');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [selectedTaskID, setSelectedTaskID] = useState(null);
   const [dateViewBegin, setDateViewBegin] = useState(dayjs());
 
   return (
@@ -40,7 +40,7 @@ function App() {
       <CssBaseLine />
 
       {/* Task Modal */}
-      <TaskModal taskModalState={taskModalState} handleClose={() => setTaskModalState('closed')} />
+      <TaskModal selectedTaskID={selectedTaskID} handleClose={() => setSelectedTaskID(null)} />
 
       {/* Main Container */}
       <Box sx={{ display: 'flex' }}>
@@ -48,7 +48,7 @@ function App() {
         <AppBar 
           isSidebarOpen={isSidebarOpen}
           setSidebarOpen={() => setIsSidebarOpen(!isSidebarOpen)}
-          openTaskModal={() => setTaskModalState('create')}
+          openTaskModal={() => setSelectedTaskID(-1)}
           setTaskViewBegin={setDateViewBegin}
         />
 
@@ -61,7 +61,7 @@ function App() {
         />
 
         {/* Main Content */}
-        <MainContent isSidebarOpen={isSidebarOpen} dateViewBegin={dateViewBegin}/>
+        <MainContent isSidebarOpen={isSidebarOpen} dateViewBegin={dateViewBegin} setSelectedTaskID={setSelectedTaskID}/>
       </Box>
     </>
   )

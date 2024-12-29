@@ -2,7 +2,11 @@ mod db;
 mod schema;
 mod algo;
 
-use db::{create_task, delete_task, get_task_list, update_task};
+use db::{create_task, 
+         delete_task, 
+         get_task_list, 
+         update_task, 
+         get_original_task};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -26,7 +30,8 @@ pub fn run() {
       create_task,
       get_task_list,
       update_task,
-      delete_task
+      delete_task,
+      get_original_task
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");

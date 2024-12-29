@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -85,24 +85,86 @@ CLDTimeRange.propTypes = {
 
 
 // TaskModal component
-const TaskModal = ({ taskModalState, handleClose }) => {
+const TaskModal = ({ selectedTaskID, handleClose }) => {
+  console.log(selectedTaskID);
   const theme = useTheme();
   // Set states
-  const [taskTitle, setTaskTitle] = useState('');
-  const [taskGroup, setTaskGroup] = useState('Normal');
+  const [taskDetails, setTaskDetails] = useState({
+    taskID: null,
+    taskTitle: '',
+    taskGroup: 'Normal',
+    haveDeadline: true,
+    deadlineDate: dayjs(),
+    deadlineTime: dayjs(),
+    restrict: true,
+    taskDate: dayjs(),
+    fromTime: dayjs(),
+    toTime: dayjs(),
+    duration: 0,
+    maxSplits: 1,
+    taskDescription: ''
+  });
 
-  const [haveDeadline, setHaveDeadline] = useState(true);
-  const [deadlineDate, setDeadlineDate] = useState(dayjs());
-  const [deadlineTime, setDeadlineTime] = useState(dayjs());
+  const {
+    taskTitle,
+    taskGroup,
+    haveDeadline,
+    deadlineDate,
+    deadlineTime,
+    restrict,
+    taskDate,
+    fromTime,
+    toTime,
+    duration,
+    maxSplits,
+    taskDescription
+  } = taskDetails;
 
-  const [restrict, setRestrict] = useState(true);
-  const [taskDate, setTaskDate] = useState(dayjs());
-  const [fromTime, setFromTime] = useState(dayjs());
-  const [toTime, setToTime] = useState(dayjs());
-  const [duration, setDuration] = useState(0);
-  const [maxSplits, setMaxSplits] = useState(1);
+  const setTaskDetail = (key, value) => {
+    setTaskDetails(prevState => ({
+      ...prevState,
+      [key]: value
+    }));
+  };
+  const setTaskTitle = (value) => setTaskDetail('taskTitle', value);
+  const setTaskGroup = (value) => setTaskDetail('taskGroup', value);
+  const setHaveDeadline = (value) => setTaskDetail('haveDeadline', value);
+  const setDeadlineDate = (value) => setTaskDetail('deadlineDate', value);
+  const setDeadlineTime = (value) => setTaskDetail('deadlineTime', value);
+  const setRestrict = (value) => setTaskDetail('restrict', value);
+  const setTaskDate = (value) => setTaskDetail('taskDate', value);
+  const setFromTime = (value) => setTaskDetail('fromTime', value);
+  const setToTime = (value) => setTaskDetail('toTime', value);
+  const setDuration = (value) => setTaskDetail('duration', value);
+  const setMaxSplits = (value) => setTaskDetail('maxSplits', value);
+  const setTaskDescription = (value) => setTaskDetail('taskDescription', value);
 
-  const [taskDescription, setTaskDescription] = useState('');
+  useEffect(() => {
+    const fetchTask = async () => {
+      if (selectedTaskID && selectedTaskID !== -1) {
+        const selectedTask = await invoke('get_original_task', { taskId: selectedTaskID });
+        console.log(selectedTask);
+        
+        setTaskDetails({
+          taskID: selectedTask.task_id,
+          taskTitle: selectedTask.task_title,
+          taskGroup: selectedTask.task_group,
+          haveDeadline: selectedTask.have_deadline,
+          deadlineDate: dayjs(selectedTask.deadline_date),
+          deadlineTime: dayjs().set('hour', selectedTask.deadline_time.split(':')[0]).set('minute', selectedTask.deadline_time.split(':')[1]),
+          restrict: selectedTask.restrict,
+          taskDate: dayjs(selectedTask.task_date),
+          fromTime: dayjs().set('hour', selectedTask.from_time.split(':')[0]).set('minute', selectedTask.from_time.split(':')[1]),
+          toTime: dayjs().set('hour', selectedTask.to_time.split(':')[0]).set('minute', selectedTask.to_time.split(':')[1]),
+          duration: selectedTask.duration,
+          maxSplits: selectedTask.max_splits,
+          taskDescription: selectedTask.task_description
+        });
+      }
+    };
+
+    fetchTask();
+  }, [selectedTaskID]);
 
   const handleSubmit = async () => {
     const taskData = {
@@ -131,7 +193,7 @@ const TaskModal = ({ taskModalState, handleClose }) => {
 
   return (
     <Dialog
-      open={taskModalState !== 'closed'}
+      open={selectedTaskID !== null}
       onClose={handleClose}
       aria-labelledby="mini-modal-title"
       aria-describedby="mini-modal-description"
@@ -308,7 +370,8 @@ const TaskModal = ({ taskModalState, handleClose }) => {
             color: 'white', 
             backgroundColor: theme.palette.primary.main, 
             padding: '10px 20px 10px 20px',
-            visibility: taskModalState === 'create' ? 'hidden' : 'visible'
+            visibility: selectedTaskID != null ? 'hidden' : 'visible',
+            transition: 'visibility 0s 0.3s, opacity 0.3s linear',
           }}
         >
           Delete
@@ -329,6 +392,6 @@ const TaskModal = ({ taskModalState, handleClose }) => {
 export default TaskModal;
 
 TaskModal.propTypes = {
-  taskModalState: PropTypes.string.isRequired,
+  selectedTaskID: PropTypes.number.isRequired,
   handleClose: PropTypes.func.isRequired
 };

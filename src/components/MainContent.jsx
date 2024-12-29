@@ -41,7 +41,7 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
   }),
 );
 
-const DayColumn = ({ day, index }) => {
+const DayColumn = ({ day, index, setSelectedTaskID }) => {
   const theme = useTheme();
 
   const dayName = day.format("dddd");
@@ -123,13 +123,11 @@ const DayColumn = ({ day, index }) => {
         // Calculate start and end positions
         const fromTimeMinutes = dayjs(task.from_time, "HH:mm").hour() * 60 + dayjs(task.from_time, "HH:mm").minute();
 
-        console.log(task);
-
         const startPosition = (fromTimeMinutes / 1440) * 100; // Start position as a percentage
         const height = (task.duration / 1440) * 100; // Height as a percentage
 
         return (
-          <Box 
+          <Box
             key={task.id} 
             sx={{
               top: `${startPosition}%`,
@@ -142,7 +140,12 @@ const DayColumn = ({ day, index }) => {
               justifyContent: 'center',
               alignItems: 'center',
               borderBottom: '1px solid white',
+              ":hover": {
+                backgroundColor: theme.palette.primary.dark,
+                cursor: 'pointer',
+              },
             }}
+            onClick = {() => setSelectedTaskID(task.ref_task_id)}
           >
             <Typography variant="body1" color='white'>{task.task_title}</Typography>
           </Box>
@@ -163,15 +166,16 @@ const DayColumn = ({ day, index }) => {
 DayColumn.propTypes = {
   day: PropTypes.object.isRequired,
   index: PropTypes.number.isRequired,
+  setSelectedTaskID: PropTypes.func.isRequired,
 };
 
-export default function MainContent({ isSidebarOpen, dateViewBegin }) {
+export default function MainContent({ isSidebarOpen, dateViewBegin, setSelectedTaskID }) {
   return (
     <Main open={isSidebarOpen} >
       <Grid container columns={7} sx={{ height: '100%' }}>
         {Array.from({ length: 7 }).map((_, index) => (
           <Grid key={index} size={1} item sx={{ height: '100%' }}>
-            <DayColumn day={dateViewBegin.add(index, 'day')} index={index} />
+            <DayColumn day={dateViewBegin.add(index, 'day')} index={index} setSelectedTaskID={setSelectedTaskID}/>
           </Grid>
         ))}
       </Grid>
@@ -182,4 +186,5 @@ export default function MainContent({ isSidebarOpen, dateViewBegin }) {
 MainContent.propTypes = {
   isSidebarOpen: PropTypes.bool.isRequired,
   dateViewBegin: PropTypes.object.isRequired,
+  setSelectedTaskID: PropTypes.func.isRequired,
 }

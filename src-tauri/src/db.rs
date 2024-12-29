@@ -130,6 +130,17 @@ pub fn get_task_list(date: &str) -> Vec<ActiveTask> {
 }
 
 #[tauri::command]
+pub fn get_original_task(task_id: i32) -> Task {
+    let mut connection = establish_db_connection();
+
+    tasks::table
+        .filter(tasks::task_id.eq(task_id))
+        .select(Task::as_select())
+        .first::<Task>(&mut connection)
+        .expect("Error loading original task")
+}
+
+#[tauri::command]
 pub fn update_task(updated_task: Task) -> String {
     use crate::schema::tasks::dsl::*;
 
