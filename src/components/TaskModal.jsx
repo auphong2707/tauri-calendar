@@ -191,6 +191,16 @@ const TaskModal = ({ selectedTaskID, handleClose }) => {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      const response = await invoke('delete_task', { deleteTaskId: selectedTaskID });
+      handleClose();
+      console.log(response);
+    } catch (error) {
+      console.error('Error deleting task:', error);
+    }
+  }
+
   return (
     <Dialog
       open={selectedTaskID !== null}
@@ -365,12 +375,12 @@ const TaskModal = ({ selectedTaskID, handleClose }) => {
 
       <DialogActions style={{ justifyContent: 'space-between', padding: '0px 25px 20px 25px' }}>
         <Button 
-          onClick={handleClose} 
+          onClick={handleDelete} 
           sx={{ 
             color: 'white', 
             backgroundColor: theme.palette.primary.main, 
             padding: '10px 20px 10px 20px',
-            visibility: selectedTaskID != null ? 'hidden' : 'visible',
+            visibility: (selectedTaskID !== null && selectedTaskID > 0) ? 'visible' : 'hidden',
             transition: 'visibility 0s 0.3s, opacity 0.3s linear',
           }}
         >
@@ -380,7 +390,7 @@ const TaskModal = ({ selectedTaskID, handleClose }) => {
           <Button onClick={handleClose} sx={{ color: 'white', backgroundColor: theme.palette.primary.main, padding: '10px 20px 10px 20px' }}>
             Cancel
           </Button>
-          <Button type="submit" onClick={handleSubmit} sx={{ color: 'white', backgroundColor: theme.palette.primary.main, padding: '10px 20px 10px 20px' }}>
+          <Button type="submit" onClick={ selectedTaskID === -1 ? handleSubmit : null} sx={{ color: 'white', backgroundColor: theme.palette.primary.main, padding: '10px 20px 10px 20px' }}>
             Accept
           </Button>
         </div>

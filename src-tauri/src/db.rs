@@ -1,5 +1,6 @@
 use std::fs;
 use std::path::Path;
+use diesel::connection;
 use dirs_next::home_dir;
 
 use diesel::prelude::*;
@@ -78,18 +79,7 @@ pub struct ActiveTask {
 }
 // [END TABLE STRUCTURE]
 
-
-
-// [CRUD OPERATIONS]
-#[tauri::command]
-pub fn create_task(task: Task) -> String {
-    let mut connection = establish_db_connection();
-    diesel::insert_into(tasks::table)
-        .values(&task)
-        .execute(&mut connection)
-        .map(|_| "Task created successfully".to_string())
-        .unwrap_or_else(|err| format!("Error creating task: {}", err));
-
+fn rearrange_tasks(mut connection: SqliteConnection) -> String {
     // Calculate tomorrow's date
     let tomorrow = chrono::Local::now().naive_local().date() + Duration::days(1);
     let tomorrow_str = tomorrow.to_string();
@@ -114,6 +104,22 @@ pub fn create_task(task: Task) -> String {
         .values(&arranged_tasks)
         .execute(&mut connection)
         .expect("Error inserting arranged tasks into active_tasks table");
+
+    "Rearranged tasks successfully".to_string()
+}
+
+// [CRUD OPERATIONS]
+#[tauri::command]
+pub fn create_task(task: Task) -> String {
+    let mut connection = establish_db_connection();
+    diesel::insert_into(tasks::table)
+        .values(&task)
+        .execute(&mut connection)
+        .map(|_| "Task created successfully".to_string())
+        .unwrap_or_else(|err| format!("Error creating task: {}", err));
+
+    // Rearrange the tasks
+    rearrange_tasks(connection);
 
     "Task created successfully".to_string()
 }
@@ -160,6 +166,11 @@ pub fn delete_task(delete_task_id: i32) -> String {
     diesel::delete(tasks.filter(task_id.eq(delete_task_id)))
         .execute(&mut connection)
         .map(|_| "Task deleted successfully".to_string())
-        .unwrap_or_else(|err| format!("Failed to delete task: {}", err))
+        .unwrap_or_else(|err| format!("Failed to delete task: {}", err));
+
+    // Rearrange the tasks
+    rearrange_tasks(connection);
+
+    "Task deleted successfully".to_string()
 }
 // [END CRUD OPERATIONS]
