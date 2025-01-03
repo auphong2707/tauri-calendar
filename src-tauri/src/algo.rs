@@ -25,17 +25,12 @@ fn is_ok_to_add_task(free_time_vec: &mut Vec<TimeSpace>, task_duration: i32, num
         return false;
     }
 
-    println!("Pass check 1");
-    println!("Free time vec: {:?}", free_time_vec);
-
     for index in 0..num_split as usize {
         sum_duration += free_time_vec[index].duration;
         if free_time_vec[index].duration < time_base {
             return false;
         }
     }
-
-    println!("Pass check 2");
 
     sum_duration >= task_duration
 }
@@ -218,8 +213,9 @@ pub fn get_arranged_tasks(tasks: Vec<Task>, from_date: NaiveDate) -> Vec<ActiveT
                     task_status: "Pending".to_string(),
                     task_description: task.task_description.clone(),
                 };
-
+                println!("Active task: {:?}", active_task.clone());
                 active_tasks.push(active_task);
+
             } else {
                 let time_left_for_each_task = time_left / (index as i32 + 1);
                 println!("index + 1: {}, num_split: {}", index, num_split);
@@ -242,7 +238,9 @@ pub fn get_arranged_tasks(tasks: Vec<Task>, from_date: NaiveDate) -> Vec<ActiveT
 
                         time_left -= time_left_for_each_task;
 
+                        println!("Active task: {:?}", active_task.clone());
                         active_tasks.push(active_task);
+
                     } else {
                         let active_task = ActiveTask {
                             active_task_id: None,
@@ -258,9 +256,11 @@ pub fn get_arranged_tasks(tasks: Vec<Task>, from_date: NaiveDate) -> Vec<ActiveT
                             task_description: task.task_description.clone(),
                         };
 
+                        println!("Active task: {:?}", active_task.clone());
                         active_tasks.push(active_task);
                     }
                 }
+                break;
             }
         }
     }

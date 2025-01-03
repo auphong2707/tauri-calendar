@@ -1,6 +1,5 @@
 use std::fs;
 use std::path::Path;
-use diesel::connection;
 use dirs_next::home_dir;
 
 use diesel::prelude::*;
@@ -65,7 +64,7 @@ pub struct Task {
     pub task_description: String,
 }
 
-#[derive(Queryable, Insertable, AsChangeset, Selectable, serde::Deserialize, serde::Serialize, Debug)]
+#[derive(Queryable, Insertable, AsChangeset, Selectable, serde::Deserialize, serde::Serialize, Debug, Clone)]
 #[diesel(table_name = active_tasks)]
 pub struct ActiveTask {
     pub active_task_id: Option<i32>,
